@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,10 +33,12 @@ import {
   PlayCircle,
   FileText,
   Lock,
+  ShoppingCart,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
+import { useCart } from "@/hooks/useCart";
 
 // Mock course data
 const COURSE = {
@@ -122,11 +123,45 @@ const CourseDetails = () => {
   const { courseId } = useParams();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const { addToCart, isInCart } = useCart();
   const [activeTab, setActiveTab] = useState("overview");
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   
   // Mock check if user is enrolled
   const isEnrolled = isAuthenticated && user?.role === "student";
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to add this course to your cart",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsAddingToCart(true);
+    
+    try {
+      // Add to cart
+      await addToCart(COURSE);
+      
+      toast({
+        title: "Added to Cart",
+        description: `${COURSE.title} has been added to your cart`,
+      });
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      toast({
+        title: "Failed to Add to Cart",
+        description: "There was an error adding this course to your cart",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
 
   const handleEnroll = async () => {
     if (!isAuthenticated) {
@@ -176,6 +211,9 @@ const CourseDetails = () => {
     ),
     0
   );
+  
+  // Check if the course is already in the cart
+  const courseInCart = isInCart(COURSE.id);
   
   return (
     <>
@@ -253,20 +291,54 @@ const CourseDetails = () => {
                           </Link>
                         </Button>
                       ) : (
-                        <Button 
-                          className="w-full mb-4" 
-                          onClick={handleEnroll}
-                          disabled={isEnrolling}
-                        >
-                          {isEnrolling ? (
-                            <>
-                              <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
-                              Enrolling...
-                            </>
+                        <div className="space-y-3 mb-4">
+                          <Button 
+                            className="w-full" 
+                            onClick={handleEnroll}
+                            disabled={isEnrolling}
+                          >
+                            {isEnrolling ? (
+                              <>
+                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
+                                Enrolling...
+                              </>
+                            ) : (
+                              "Enroll Now"
+                            )}
+                          </Button>
+                          
+                          {!courseInCart ? (
+                            <Button 
+                              variant="outline" 
+                              className="w-full"
+                              onClick={handleAddToCart}
+                              disabled={isAddingToCart}
+                            >
+                              {isAddingToCart ? (
+                                <>
+                                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-primary rounded-full"></div>
+                                  Adding...
+                                </>
+                              ) : (
+                                <>
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Add to Cart
+                                </>
+                              )}
+                            </Button>
                           ) : (
-                            "Enroll Now"
+                            <Button 
+                              variant="secondary" 
+                              className="w-full"
+                              asChild
+                            >
+                              <Link to="/cart">
+                                <ShoppingCart className="mr-2 h-4 w-4" />
+                                View in Cart
+                              </Link>
+                            </Button>
                           )}
-                        </Button>
+                        </div>
                       )}
                       
                       <div className="space-y-4">
