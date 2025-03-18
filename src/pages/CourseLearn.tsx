@@ -25,11 +25,19 @@ import {
   FileText, 
   MenuIcon, 
   PlayCircle,
-  Award 
+  Award,
+  HelpCircle,
+  Check,
+  X 
 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/layout/Navbar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FadeIn from "@/components/animation/FadeIn";
+import Quiz from "@/components/learning/Quiz";
 
 // Mock course data
 const COURSE = {
@@ -65,7 +73,35 @@ const COURSE = {
               </ul>
               <p>Let's get started!</p>
             </div>
-          ` 
+          `,
+          quiz: {
+            id: "quiz1",
+            title: "Course Overview Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "What technology is NOT covered in this course?",
+                options: [
+                  { id: "a", text: "React" },
+                  { id: "b", text: "Node.js" },
+                  { id: "c", text: "MongoDB" },
+                  { id: "d", text: "Swift" }
+                ],
+                correctAnswer: "d"
+              },
+              {
+                id: "q2",
+                question: "What will you be able to build by the end of this course?",
+                options: [
+                  { id: "a", text: "Mobile applications" },
+                  { id: "b", text: "Full-stack web applications" },
+                  { id: "c", text: "Operating systems" },
+                  { id: "d", text: "Hardware devices" }
+                ],
+                correctAnswer: "b"
+              }
+            ]
+          }
         },
         { 
           id: "lesson2", 
@@ -90,7 +126,35 @@ const COURSE = {
               </ol>
               <p>Once you have all these tools installed, you're ready to start building web applications!</p>
             </div>
-          `
+          `,
+          quiz: {
+            id: "quiz2",
+            title: "Development Environment Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "Which code editor is recommended in this course?",
+                options: [
+                  { id: "a", text: "Visual Studio Code" },
+                  { id: "b", text: "Notepad" },
+                  { id: "c", text: "Eclipse" },
+                  { id: "d", text: "Sublime Text" }
+                ],
+                correctAnswer: "a"
+              },
+              {
+                id: "q2",
+                question: "What is Node.js?",
+                options: [
+                  { id: "a", text: "A web browser" },
+                  { id: "b", text: "A database" },
+                  { id: "c", text: "A JavaScript runtime" },
+                  { id: "d", text: "A code editor" }
+                ],
+                correctAnswer: "c"
+              }
+            ]
+          }
         },
         { 
           id: "lesson3", 
@@ -117,7 +181,46 @@ const COURSE = {
               </ol>
               <p>Understanding this fundamental process is essential for web development.</p>
             </div>
-          `
+          `,
+          quiz: {
+            id: "quiz3",
+            title: "Web Fundamentals Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "What does HTTP stand for?",
+                options: [
+                  { id: "a", text: "HyperText Transfer Protocol" },
+                  { id: "b", text: "High-Tech Transfer Process" },
+                  { id: "c", text: "Home Tool Transfer Protocol" },
+                  { id: "d", text: "Hyperlink Text Transfer Process" }
+                ],
+                correctAnswer: "a"
+              },
+              {
+                id: "q2",
+                question: "What does DNS do?",
+                options: [
+                  { id: "a", text: "Encrypts web traffic" },
+                  { id: "b", text: "Translates domain names to IP addresses" },
+                  { id: "c", text: "Creates web pages" },
+                  { id: "d", text: "Stores website data" }
+                ],
+                correctAnswer: "b"
+              },
+              {
+                id: "q3",
+                question: "Which model does the web operate on?",
+                options: [
+                  { id: "a", text: "Peer-to-peer model" },
+                  { id: "b", text: "Client-server model" },
+                  { id: "c", text: "Master-slave model" },
+                  { id: "d", text: "Producer-consumer model" }
+                ],
+                correctAnswer: "b"
+              }
+            ]
+          }
         }
       ]
     },
@@ -159,28 +262,107 @@ const COURSE = {
               </ul>
               <p>In the next lesson, we'll dive deeper into HTML elements and attributes.</p>
             </div>
-          `
+          `,
+          quiz: {
+            id: "quiz4",
+            title: "HTML Basics Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "What does HTML stand for?",
+                options: [
+                  { id: "a", text: "HyperText Markup Language" },
+                  { id: "b", text: "High-Tech Modern Language" },
+                  { id: "c", text: "Home Tool Markup Language" },
+                  { id: "d", text: "Hyperlink Text Management Language" }
+                ],
+                correctAnswer: "a"
+              },
+              {
+                id: "q2",
+                question: "Which tag is used for creating a paragraph in HTML?",
+                options: [
+                  { id: "a", text: "<paragraph>" },
+                  { id: "b", text: "<p>" },
+                  { id: "c", text: "<para>" },
+                  { id: "d", text: "<pg>" }
+                ],
+                correctAnswer: "b"
+              }
+            ]
+          }
         },
         { 
           id: "lesson5", 
           title: "HTML Elements and Attributes", 
           type: "video", 
           duration: "22:00",
-          content: "Lesson content about HTML elements and attributes..."
+          content: "Lesson content about HTML elements and attributes...",
+          quiz: {
+            id: "quiz5",
+            title: "HTML Elements Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "Which attribute is used to specify an image source in an <img> tag?",
+                options: [
+                  { id: "a", text: "href" },
+                  { id: "b", text: "src" },
+                  { id: "c", text: "link" },
+                  { id: "d", text: "source" }
+                ],
+                correctAnswer: "b"
+              }
+            ]
+          }
         },
         { 
           id: "lesson6", 
           title: "HTML Forms", 
           type: "video", 
           duration: "25:00",
-          content: "Lesson content about HTML forms..."
+          content: "Lesson content about HTML forms...",
+          quiz: {
+            id: "quiz6",
+            title: "HTML Forms Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "Which HTML element is used to create a form?",
+                options: [
+                  { id: "a", text: "<input>" },
+                  { id: "b", text: "<form>" },
+                  { id: "c", text: "<section>" },
+                  { id: "d", text: "<div>" }
+                ],
+                correctAnswer: "b"
+              }
+            ]
+          }
         },
         { 
           id: "lesson7", 
           title: "HTML Project: Building a Basic Webpage", 
           type: "project", 
           duration: "45:00",
-          content: "Project instructions for building a basic webpage with HTML..."
+          content: "Project instructions for building a basic webpage with HTML...",
+          quiz: {
+            id: "quiz7",
+            title: "HTML Project Quiz",
+            questions: [
+              {
+                id: "q1",
+                question: "What is the correct HTML tag for the largest heading?",
+                options: [
+                  { id: "a", text: "<h6>" },
+                  { id: "b", text: "<heading>" },
+                  { id: "c", text: "<h1>" },
+                  { id: "d", text: "<head>" }
+                ],
+                correctAnswer: "c"
+              }
+            ]
+          }
         }
       ]
     }
@@ -217,7 +399,22 @@ const CourseLearn = () => {
   const { user } = useAuth();
   const [activeLesson, setActiveLesson] = useState<any>(null);
   const [progress, setProgress] = useState<string[]>([]);
+  const [quizProgress, setQuizProgress] = useState<Record<string, boolean>>({});
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [showQuizResults, setShowQuizResults] = useState(false);
+  const [quizResults, setQuizResults] = useState<{
+    score: number;
+    totalQuestions: number;
+    correctAnswers: string[];
+    userAnswers: Record<string, string>;
+  }>({
+    score: 0,
+    totalQuestions: 0,
+    correctAnswers: [],
+    userAnswers: {}
+  });
   
   // Initialize with first lesson if no lessonId is provided
   useEffect(() => {
@@ -229,17 +426,29 @@ const CourseLearn = () => {
     } else {
       const lesson = findLessonById(lessonId);
       setActiveLesson(lesson);
+      setShowQuiz(false);
+      setQuizCompleted(!!quizProgress[lessonId || '']);
     }
-  }, [courseId, lessonId, navigate]);
+  }, [courseId, lessonId, navigate, quizProgress]);
 
   // Load progress from localStorage
   useEffect(() => {
     const savedProgress = localStorage.getItem(`course_${courseId}_progress`);
+    const savedQuizProgress = localStorage.getItem(`course_${courseId}_quiz_progress`);
+    
     if (savedProgress) {
       try {
         setProgress(JSON.parse(savedProgress));
       } catch (error) {
         console.error("Failed to parse saved progress", error);
+      }
+    }
+    
+    if (savedQuizProgress) {
+      try {
+        setQuizProgress(JSON.parse(savedQuizProgress));
+      } catch (error) {
+        console.error("Failed to parse saved quiz progress", error);
       }
     }
   }, [courseId]);
@@ -250,6 +459,31 @@ const CourseLearn = () => {
       const updatedProgress = [...progress, lessonId];
       setProgress(updatedProgress);
       localStorage.setItem(`course_${courseId}_progress`, JSON.stringify(updatedProgress));
+    }
+  };
+
+  // Mark quiz as completed
+  const markQuizAsCompleted = (lessonId: string) => {
+    const updatedQuizProgress = { ...quizProgress, [lessonId]: true };
+    setQuizProgress(updatedQuizProgress);
+    localStorage.setItem(`course_${courseId}_quiz_progress`, JSON.stringify(updatedQuizProgress));
+    setQuizCompleted(true);
+  };
+
+  // Handle quiz completion
+  const handleQuizComplete = (results: {
+    score: number;
+    totalQuestions: number;
+    correctAnswers: string[];
+    userAnswers: Record<string, string>;
+  }) => {
+    setQuizResults(results);
+    setShowQuizResults(true);
+    
+    if (results.score === results.totalQuestions) {
+      if (activeLesson) {
+        markQuizAsCompleted(activeLesson.id);
+      }
     }
   };
 
@@ -322,6 +556,7 @@ const CourseLearn = () => {
                   course={COURSE} 
                   activeLesson={activeLesson} 
                   progress={progress}
+                  quizProgress={quizProgress}
                   courseId={courseId as string}
                   onLessonSelect={() => setIsMobileNavOpen(false)}
                 />
@@ -354,6 +589,7 @@ const CourseLearn = () => {
               course={COURSE} 
               activeLesson={activeLesson} 
               progress={progress}
+              quizProgress={quizProgress}
               courseId={courseId as string}
             />
           </div>
@@ -362,66 +598,188 @@ const CourseLearn = () => {
           <div className="flex-1 overflow-y-auto h-[calc(100vh-64px)]">
             {activeLesson ? (
               <FadeIn>
-                <div className="p-6 md:p-10">
-                  <h1 className="text-2xl md:text-3xl font-bold mb-2">
-                    {activeLesson.title}
-                  </h1>
-                  <div className="flex items-center text-sm text-muted-foreground mb-6">
-                    {activeLesson.type === "video" ? (
-                      <PlayCircle className="h-4 w-4 mr-1" />
-                    ) : (
-                      <FileText className="h-4 w-4 mr-1" />
-                    )}
-                    <span>{activeLesson.type === "video" ? "Video" : "Reading"} • {activeLesson.duration}</span>
-                  </div>
-                  
-                  {/* Video Placeholder */}
-                  {activeLesson.type === "video" && (
-                    <div className="aspect-video bg-muted rounded-md mb-8 flex items-center justify-center">
-                      <PlayCircle className="h-16 w-16 text-muted-foreground/50" />
+                {showQuiz ? (
+                  <div className="p-6 md:p-10">
+                    <div className="flex items-center mb-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowQuiz(false)}
+                        className="mr-2"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-2" />
+                        Back to Lesson
+                      </Button>
+                      <h2 className="text-xl font-bold">
+                        {activeLesson.quiz?.title || "Quiz"}
+                      </h2>
                     </div>
-                  )}
-                  
-                  {/* Lesson Content */}
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: activeLesson.content || "Content not available for this lesson." }}
-                    className="mb-10"
-                  />
-                  
-                  {/* Navigation Controls */}
-                  <div className="flex justify-between items-center border-t pt-6 mt-10">
-                    <Button 
-                      variant="outline" 
-                      onClick={goToPrevLesson}
-                      disabled={!findPrevLesson(activeLesson.id)}
-                    >
-                      <ChevronLeft className="mr-2 h-4 w-4" />
-                      Previous Lesson
-                    </Button>
                     
-                    {progress.includes(activeLesson.id) ? (
-                      <span className="flex items-center text-sm text-muted-foreground">
-                        <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
-                        Completed
-                      </span>
+                    {showQuizResults ? (
+                      <div className="space-y-6">
+                        <div className="p-6 bg-background rounded-lg border">
+                          <h3 className="text-xl font-bold mb-4">Quiz Results</h3>
+                          <div className="flex items-center justify-between mb-6">
+                            <div>
+                              <p className="text-lg font-medium">
+                                Score: {quizResults.score}/{quizResults.totalQuestions}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {Math.round((quizResults.score / quizResults.totalQuestions) * 100)}% correct
+                              </p>
+                            </div>
+                            <div className="relative h-24 w-24">
+                              <Progress 
+                                value={(quizResults.score / quizResults.totalQuestions) * 100} 
+                                className="h-24 w-24 rounded-full"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center text-xl font-bold">
+                                {quizResults.score}/{quizResults.totalQuestions}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {quizResults.score === quizResults.totalQuestions ? (
+                            <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 p-4 rounded-md flex items-center mb-6">
+                              <Check className="h-5 w-5 mr-2 flex-shrink-0" />
+                              <p>Perfect score! You've mastered this material.</p>
+                            </div>
+                          ) : (
+                            <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 p-4 rounded-md flex items-center mb-6">
+                              <HelpCircle className="h-5 w-5 mr-2 flex-shrink-0" />
+                              <p>Review the material and try again to improve your score.</p>
+                            </div>
+                          )}
+                          
+                          <div className="flex justify-between">
+                            {quizResults.score < quizResults.totalQuestions && (
+                              <Button onClick={() => {
+                                setShowQuizResults(false);
+                              }}>
+                                Try Again
+                              </Button>
+                            )}
+                            <Button 
+                              variant={quizResults.score === quizResults.totalQuestions ? "default" : "outline"} 
+                              onClick={() => {
+                                setShowQuiz(false);
+                                if (quizResults.score === quizResults.totalQuestions) {
+                                  goToNextLesson();
+                                }
+                              }}
+                            >
+                              {quizResults.score === quizResults.totalQuestions ? (
+                                <>
+                                  Next Lesson
+                                  <ChevronRight className="ml-2 h-4 w-4" />
+                                </>
+                              ) : (
+                                "Back to Lesson"
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
+                      <Quiz 
+                        quiz={activeLesson.quiz} 
+                        onComplete={handleQuizComplete}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-6 md:p-10">
+                    <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                      {activeLesson.title}
+                    </h1>
+                    <div className="flex items-center text-sm text-muted-foreground mb-6">
+                      {activeLesson.type === "video" ? (
+                        <PlayCircle className="h-4 w-4 mr-1" />
+                      ) : (
+                        <FileText className="h-4 w-4 mr-1" />
+                      )}
+                      <span>{activeLesson.type === "video" ? "Video" : "Reading"} • {activeLesson.duration}</span>
+                    </div>
+                    
+                    {/* Video Placeholder */}
+                    {activeLesson.type === "video" && (
+                      <div className="aspect-video bg-muted rounded-md mb-8 flex items-center justify-center">
+                        <PlayCircle className="h-16 w-16 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    
+                    {/* Lesson Content */}
+                    <div 
+                      dangerouslySetInnerHTML={{ __html: activeLesson.content || "Content not available for this lesson." }}
+                      className="mb-10"
+                    />
+                    
+                    {/* Quiz Button */}
+                    {activeLesson.quiz && (
+                      <div className="mb-10 p-4 bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-lg">
+                        <div className="flex items-start">
+                          <HelpCircle className="mt-1 h-5 w-5 text-sky-500 mr-3 flex-shrink-0" />
+                          <div>
+                            <h3 className="font-medium mb-1">Quiz Available</h3>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              Test your knowledge with a short quiz about this lesson.
+                            </p>
+                            <Button
+                              onClick={() => setShowQuiz(true)}
+                              variant={quizCompleted ? "outline" : "default"}
+                            >
+                              {quizCompleted ? (
+                                <>
+                                  <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                                  Review Quiz
+                                </>
+                              ) : (
+                                <>
+                                  <HelpCircle className="mr-2 h-4 w-4" />
+                                  Take Quiz
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Navigation Controls */}
+                    <div className="flex justify-between items-center border-t pt-6 mt-10">
                       <Button 
                         variant="outline" 
-                        onClick={() => markAsCompleted(activeLesson.id)}
+                        onClick={goToPrevLesson}
+                        disabled={!findPrevLesson(activeLesson.id)}
                       >
-                        Mark as Completed
+                        <ChevronLeft className="mr-2 h-4 w-4" />
+                        Previous Lesson
                       </Button>
-                    )}
-                    
-                    <Button 
-                      onClick={goToNextLesson}
-                      disabled={!findNextLesson(activeLesson.id)}
-                    >
-                      Next Lesson
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
+                      
+                      {progress.includes(activeLesson.id) ? (
+                        <span className="flex items-center text-sm text-muted-foreground">
+                          <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                          Completed
+                        </span>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          onClick={() => markAsCompleted(activeLesson.id)}
+                        >
+                          Mark as Completed
+                        </Button>
+                      )}
+                      
+                      <Button 
+                        onClick={goToNextLesson}
+                        disabled={!findNextLesson(activeLesson.id)}
+                      >
+                        Next Lesson
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </FadeIn>
             ) : (
               <div className="flex items-center justify-center h-full">
@@ -440,11 +798,12 @@ interface CourseSidebarProps {
   course: typeof COURSE;
   activeLesson: any;
   progress: string[];
+  quizProgress: Record<string, boolean>;
   courseId: string;
   onLessonSelect?: () => void;
 }
 
-const CourseSidebar = ({ course, activeLesson, progress, courseId, onLessonSelect }: CourseSidebarProps) => {
+const CourseSidebar = ({ course, activeLesson, progress, quizProgress, courseId, onLessonSelect }: CourseSidebarProps) => {
   return (
     <Accordion type="multiple" defaultValue={course.curriculum.map(section => section.id)}>
       {course.curriculum.map((section) => (
@@ -478,6 +837,9 @@ const CourseSidebar = ({ course, activeLesson, progress, courseId, onLessonSelec
                       <FileText className="h-4 w-4 mr-3 flex-shrink-0" />
                     )}
                     <span className="line-clamp-1">{lesson.title}</span>
+                    {lesson.quiz && quizProgress[lesson.id] && (
+                      <HelpCircle className="h-3 w-3 ml-1 text-green-500" />
+                    )}
                   </div>
                   {progress.includes(lesson.id) && (
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />

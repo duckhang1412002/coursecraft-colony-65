@@ -16,6 +16,7 @@ import CourseDetails from "./pages/CourseDetails";
 import CoursesList from "./pages/CoursesList";
 import Cart from "./pages/Cart";
 import CourseLearn from "./pages/CourseLearn";
+import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,11 @@ const App = () => (
               <Route path="/courses/create" element={
                 <ProtectedRoute allowedRoles={["teacher"]}>
                   <CourseCreation />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
