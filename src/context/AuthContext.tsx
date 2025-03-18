@@ -5,7 +5,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "student" | "teacher";
+  role: "student" | "teacher" | "admin";
   avatar?: string;
 }
 
@@ -14,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string, role: "student" | "teacher") => Promise<boolean>;
+  register: (name: string, email: string, password: string, role: "student" | "teacher" | "admin") => Promise<boolean>;
   logout: () => void;
 }
 
@@ -43,12 +43,20 @@ const MOCK_USERS: User[] = [
     role: "student",
     avatar: "https://i.pravatar.cc/150?u=student",
   },
+  {
+    id: "3",
+    name: "Admin User",
+    email: "admin@example.com", 
+    role: "admin",
+    avatar: "https://i.pravatar.cc/150?u=admin",
+  },
 ];
 
 // Mock passwords (in a real app, you would never store passwords like this)
 const MOCK_PASSWORDS = {
   "teacher@example.com": "password123",
   "student@example.com": "password123",
+  "admin@example.com": "password123",
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -118,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     name: string, 
     email: string, 
     password: string, 
-    role: "student" | "teacher"
+    role: "student" | "teacher" | "admin"
   ): Promise<boolean> => {
     setIsLoading(true);
     
