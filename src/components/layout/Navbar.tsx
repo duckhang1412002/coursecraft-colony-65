@@ -5,12 +5,15 @@ import { Menu, X, User, LogIn, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
+import LanguageSelector from "@/components/language/LanguageSelector";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const { t } = useLanguage();
 
   // Update scroll state
   useEffect(() => {
@@ -54,7 +57,7 @@ const Navbar = () => {
               location.pathname === "/" && "text-primary"
             )}
           >
-            Home
+            {t("nav.home")}
           </Link>
           <Link 
             to="/courses" 
@@ -63,7 +66,7 @@ const Navbar = () => {
               location.pathname === "/courses" && "text-primary"
             )}
           >
-            Courses
+            {t("nav.courses")}
           </Link>
           {isAuthenticated && (
             <Link 
@@ -73,16 +76,18 @@ const Navbar = () => {
                 location.pathname === "/dashboard" && "text-primary"
               )}
             >
-              Dashboard
+              {t("nav.dashboard")}
             </Link>
           )}
         </nav>
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
+          <LanguageSelector />
+          
           {isAuthenticated ? (
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" onClick={logout}>Sign Out</Button>
+              <Button variant="ghost" size="sm" onClick={logout}>{t("nav.signOut")}</Button>
               <Link to="/dashboard">
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <User className="h-5 w-5" />
@@ -92,23 +97,26 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/sign-in">
-                <Button variant="ghost" size="sm">Sign In</Button>
+                <Button variant="ghost" size="sm">{t("nav.signIn")}</Button>
               </Link>
               <Link to="/sign-up">
-                <Button>Sign Up</Button>
+                <Button>{t("nav.signUp")}</Button>
               </Link>
             </>
           )}
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-        >
-          {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="md:hidden flex items-center space-x-2">
+          <LanguageSelector />
+          <button
+            className="p-2 text-foreground"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -122,7 +130,7 @@ const Navbar = () => {
                 location.pathname === "/" && "text-primary bg-muted"
               )}
             >
-              Home
+              {t("nav.home")}
             </Link>
             <Link 
               to="/courses" 
@@ -131,7 +139,7 @@ const Navbar = () => {
                 location.pathname === "/courses" && "text-primary bg-muted"
               )}
             >
-              Courses
+              {t("nav.courses")}
             </Link>
             {isAuthenticated && (
               <Link 
@@ -141,7 +149,7 @@ const Navbar = () => {
                   location.pathname === "/dashboard" && "text-primary bg-muted"
                 )}
               >
-                Dashboard
+                {t("nav.dashboard")}
               </Link>
             )}
             <div className="border-t pt-4 mt-2">
@@ -149,25 +157,25 @@ const Navbar = () => {
                 <>
                   <Link to="/dashboard" className="flex items-center p-2 space-x-2 font-medium hover:bg-muted rounded-md">
                     <User className="h-5 w-5" />
-                    <span>My Account</span>
+                    <span>{t("nav.myAccount")}</span>
                   </Link>
                   <button 
                     onClick={logout} 
                     className="w-full text-left flex items-center p-2 space-x-2 font-medium text-destructive hover:bg-muted rounded-md"
                   >
                     <LogIn className="h-5 w-5" />
-                    <span>Sign Out</span>
+                    <span>{t("nav.signOut")}</span>
                   </button>
                 </>
               ) : (
                 <>
                   <Link to="/sign-in" className="flex items-center p-2 space-x-2 font-medium hover:bg-muted rounded-md">
                     <LogIn className="h-5 w-5" />
-                    <span>Sign In</span>
+                    <span>{t("nav.signIn")}</span>
                   </Link>
                   <Link to="/sign-up" className="flex items-center p-2 space-x-2 font-medium text-primary hover:bg-muted rounded-md">
                     <User className="h-5 w-5" />
-                    <span>Sign Up</span>
+                    <span>{t("nav.signUp")}</span>
                   </Link>
                 </>
               )}

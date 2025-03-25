@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { BookOpen, Github, Twitter, Instagram } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import FadeIn from "@/components/animation/FadeIn";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <footer className="bg-muted/30 pt-16 pb-8 px-6">
@@ -38,7 +40,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li>
                   <Link to="/courses" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Browse Courses
+                    {t("courses.browse")}
                   </Link>
                 </li>
                 <li>
@@ -111,7 +113,7 @@ const Footer = () => {
         <Separator className="mb-8" />
         
         <div className="text-center text-sm text-muted-foreground">
-          <p>© {currentYear} LearnWave. All rights reserved.</p>
+          <p>© {currentYear} LearnWave. {t("footer.rights")}</p>
         </div>
       </div>
     </footer>

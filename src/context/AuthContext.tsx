@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface User {
   id: string;
@@ -27,7 +28,6 @@ export const AuthContext = createContext<AuthContextType>({
   logout: () => {},
 });
 
-// Mock database for users
 const MOCK_USERS: User[] = [
   {
     id: "1",
@@ -52,7 +52,6 @@ const MOCK_USERS: User[] = [
   },
 ];
 
-// Mock passwords (in a real app, you would never store passwords like this)
 const MOCK_PASSWORDS = {
   "teacher@example.com": "password123",
   "student@example.com": "password123",
@@ -63,8 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
-  // Check for saved auth on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -78,40 +77,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  // Login function
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
     try {
-      // Simulate API request delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Check if the user exists and password matches
       const userIndex = MOCK_USERS.findIndex(u => u.email === email);
       if (userIndex === -1 || MOCK_PASSWORDS[email] !== password) {
         toast({
-          title: "Login failed",
+          title: t("auth.loginFailed"),
           description: "Invalid email or password",
           variant: "destructive",
         });
         return false;
       }
       
-      // Set the authenticated user
       const authenticatedUser = MOCK_USERS[userIndex];
       setUser(authenticatedUser);
       localStorage.setItem("user", JSON.stringify(authenticatedUser));
       
       toast({
-        title: "Login successful",
-        description: `Welcome back, ${authenticatedUser.name}!`,
+        title: t("auth.loginSuccess"),
+        description: `${t("auth.welcomeBack")}, ${authenticatedUser.name}!`,
       });
       
       return true;
     } catch (error) {
       console.error("Login error:", error);
       toast({
-        title: "Login failed",
+        title: t("auth.loginFailed"),
         description: "An unexpected error occurred",
         variant: "destructive",
       });
@@ -121,7 +116,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Register function
   const register = async (
     name: string, 
     email: string, 
@@ -131,20 +125,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     
     try {
-      // Simulate API request delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Check if the email already exists
       if (MOCK_USERS.some(u => u.email === email)) {
         toast({
-          title: "Registration failed",
+          title: t("auth.registerFailed"),
           description: "An account with this email already exists",
           variant: "destructive",
         });
         return false;
       }
       
-      // Create a new user
       const newUser: User = {
         id: `user_${Date.now()}`,
         name,
@@ -153,17 +144,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         avatar: `https://i.pravatar.cc/150?u=${Date.now()}`,
       };
       
-      // Add user to mock database
       MOCK_USERS.push(newUser);
-      // Add password to mock database
       (MOCK_PASSWORDS as any)[email] = password;
       
-      // Auto-login the new user
       setUser(newUser);
       localStorage.setItem("user", JSON.stringify(newUser));
       
       toast({
-        title: "Registration successful",
+        title: t("auth.registerSuccess"),
         description: `Welcome to LearnWave, ${name}!`,
       });
       
@@ -171,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Registration error:", error);
       toast({
-        title: "Registration failed",
+        title: t("auth.registerFailed"),
         description: "An unexpected error occurred",
         variant: "destructive",
       });
@@ -181,13 +169,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
     toast({
       title: "Logged out",
-      description: "You have been successfully logged out",
+      description: t("auth.loggedOut"),
     });
   };
 
