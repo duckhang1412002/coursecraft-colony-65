@@ -36,7 +36,7 @@ const Footer = () => {
             </div>
 
             <div>
-              <h4 className="font-medium mb-4">Platform</h4>
+              <h4 className="font-medium mb-4">{t("footer.platform")}</h4>
               <ul className="space-y-3">
                 <li>
                   <Link to="/courses" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -45,64 +45,64 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link to="/sign-up" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Become a Student
+                    {t("auth.student")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/sign-up" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Become a Teacher
+                    {t("auth.teacher")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/pricing" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Pricing
+                    {t("courses.price")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-medium mb-4">Resources</h4>
+              <h4 className="font-medium mb-4">{t("footer.resources")}</h4>
               <ul className="space-y-3">
                 <li>
                   <Link to="/help" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Help Center
+                    {t("footer.help")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Blog
+                    {t("footer.blog")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/tutorials" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Tutorials
+                    {t("courses.lessons")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    FAQ
+                    {t("footer.faq")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-medium mb-4">Legal</h4>
+              <h4 className="font-medium mb-4">{t("footer.legal")}</h4>
               <ul className="space-y-3">
                 <li>
                   <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Terms of Service
+                    {t("footer.terms")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Privacy Policy
+                    {t("footer.privacy")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/cookies" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Cookie Policy
+                    {t("footer.privacy")}
                   </Link>
                 </li>
               </ul>
