@@ -1,11 +1,13 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Users, Star } from "lucide-react";
+import { Clock, Users, Star, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface CourseCardProps {
   id: string;
@@ -35,6 +37,11 @@ const CourseCard = ({
   className,
 }: CourseCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
+  const [translatedDescription, setTranslatedDescription] = useState<string | null>(null);
+  const { language, t } = useLanguage();
+  const { toast } = useToast();
 
   // Get level badge color
   const getLevelColor = () => {
@@ -45,6 +52,59 @@ const CourseCard = ({
       default: return "";
     }
   };
+
+  const translateContent = async () => {
+    if (isTranslating) return;
+
+    try {
+      setIsTranslating(true);
+      
+      // Only translate if current language is not English
+      if (language !== "en") {
+        const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            q: [title, description],
+            target: language,
+            format: "text"
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.data && data.data.translations) {
+          setTranslatedTitle(data.data.translations[0].translatedText);
+          setTranslatedDescription(data.data.translations[1].translatedText);
+          toast({
+            title: t("courses.translationSuccess"),
+            description: t("courses.translationCompleted"),
+          });
+        } else {
+          throw new Error("Translation failed");
+        }
+      } else {
+        // Reset translations when language is English
+        setTranslatedTitle(null);
+        setTranslatedDescription(null);
+      }
+    } catch (error) {
+      console.error("Translation error:", error);
+      toast({
+        title: t("courses.translationError"),
+        description: t("courses.translationFailed"),
+        variant: "destructive"
+      });
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  // Determine which content to display
+  const displayTitle = translatedTitle || title;
+  const displayDescription = translatedDescription || description;
 
   return (
     <Card 
@@ -59,7 +119,7 @@ const CourseCard = ({
       <div className="relative w-full h-48 overflow-hidden">
         <img 
           src={image} 
-          alt={title}
+          alt={displayTitle}
           className={cn(
             "w-full h-full object-cover transition-transform duration-700",
             isHovered && "scale-105"
@@ -73,6 +133,25 @@ const CourseCard = ({
         >
           {level}
         </Badge>
+        
+        {language !== "en" && (
+          <Button 
+            size="icon" 
+            variant="secondary" 
+            className="absolute top-3 left-3 h-8 w-8 rounded-full bg-white/80 hover:bg-white"
+            onClick={(e) => {
+              e.preventDefault();
+              translateContent();
+            }}
+            disabled={isTranslating}
+          >
+            <RefreshCw className={cn(
+              "h-4 w-4", 
+              isTranslating && "animate-spin"
+            )} />
+            <span className="sr-only">{t("courses.translate")}</span>
+          </Button>
+        )}
       </div>
       
       <CardContent className="p-5">
@@ -88,16 +167,16 @@ const CourseCard = ({
         
         <Link to={`/course/${id}`}>
           <h3 className="text-lg font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
-            {title}
+            {displayTitle}
           </h3>
         </Link>
         
         <p className="text-muted-foreground line-clamp-2 text-sm mb-4">
-          {description}
+          {displayDescription}
         </p>
         
         <p className="text-sm font-medium mb-4">
-          By {instructor}
+          {t("courses.instructor")}: {instructor}
         </p>
         
         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
@@ -114,7 +193,7 @@ const CourseCard = ({
       
       <CardFooter className="px-5 pb-5 pt-0">
         <Button className="w-full" asChild>
-          <Link to={`/course/${id}`}>View Course</Link>
+          <Link to={`/course/${id}`}>{t("courses.viewCourse")}</Link>
         </Button>
       </CardFooter>
     </Card>

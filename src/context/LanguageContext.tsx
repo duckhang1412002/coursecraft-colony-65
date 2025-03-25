@@ -1,4 +1,3 @@
-
 import { createContext, useState, useEffect, ReactNode, useContext } from "react";
 
 // Define available languages
@@ -87,6 +86,12 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.completed": "Completed",
     "courses.in-progress": "In Progress",
     "courses.not-started": "Not Started",
+    "courses.viewCourse": "View Course",
+    "courses.translate": "Translate Content",
+    "courses.translationSuccess": "Translation Successful",
+    "courses.translationCompleted": "Course content has been translated",
+    "courses.translationError": "Translation Error",
+    "courses.translationFailed": "Failed to translate content. Please try again later.",
     
     // Cart
     "cart.title": "Your Cart",
@@ -351,6 +356,12 @@ const translations: Record<Language, Record<string, string>> = {
     "courses.completed": "Đã hoàn thành",
     "courses.in-progress": "Đang học",
     "courses.not-started": "Chưa bắt đầu",
+    "courses.viewCourse": "Xem khóa học",
+    "courses.translate": "Dịch nội dung",
+    "courses.translationSuccess": "Dịch thành công",
+    "courses.translationCompleted": "Nội dung khóa học đã được dịch",
+    "courses.translationError": "Lỗi dịch",
+    "courses.translationFailed": "Không thể dịch nội dung. Vui lòng thử lại sau.",
     
     // Cart
     "cart.title": "Giỏ hàng của bạn",
