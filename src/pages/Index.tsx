@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Shield, GraduationCap, Users, Check, Clock } from "lucide-react";
@@ -10,6 +9,7 @@ import FadeIn from "@/components/animation/FadeIn";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CourseCard from "@/components/common/CourseCard";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Mock featured courses
 const FEATURED_COURSES = [
@@ -90,6 +90,8 @@ const CATEGORIES = [
 ];
 
 const Index = () => {
+  const { t } = useLanguage();
+  
   // Parallax effect for hero section
   useEffect(() => {
     const handleScroll = () => {
@@ -119,34 +121,28 @@ const Index = () => {
         <div className="relative container mx-auto px-6 z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <FadeIn className="text-center lg:text-left">
-              <Badge className="mb-4 text-xs px-3 py-1">Learn. Grow. Succeed.</Badge>
+              <Badge className="mb-4 text-xs px-3 py-1">{t("home.hero.features").split(",")[0]}</Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
-                Transform Your Future with Powerful Learning
+                {t("home.hero.title")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
-                Join thousands of students and teachers on our premium e-learning platform. Master new skills with expert-led courses designed for real-world success.
+                {t("home.hero.subtitle")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button size="lg" asChild>
-                  <Link to="/sign-up">Get Started</Link>
+                  <Link to="/sign-up">{t("home.hero.getStarted")}</Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link to="/courses">Explore Courses</Link>
+                  <Link to="/courses">{t("home.hero.exploreCourses")}</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center justify-center lg:justify-start space-x-4 text-sm text-muted-foreground">
-                <div className="flex items-center">
-                  <Check className="h-4 w-4 text-primary mr-1.5" />
-                  <span>Expert Teachers</span>
-                </div>
-                <div className="flex items-center">
-                  <Check className="h-4 w-4 text-primary mr-1.5" />
-                  <span>Flexible Learning</span>
-                </div>
-                <div className="flex items-center">
-                  <Check className="h-4 w-4 text-primary mr-1.5" />
-                  <span>Verified Certificates</span>
-                </div>
+                {t("home.hero.features").split(",").map((feature, index) => (
+                  <div key={index} className="flex items-center">
+                    <Check className="h-4 w-4 text-primary mr-1.5" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
               </div>
             </FadeIn>
 
@@ -170,20 +166,20 @@ const Index = () => {
           <FadeIn>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-primary mb-2">10k+</h3>
-                <p className="text-muted-foreground">Active Learners</p>
+                <h3 className="text-3xl font-bold text-primary mb-2">{t("home.stats.activeLearnersCount")}</h3>
+                <p className="text-muted-foreground">{t("home.stats.activeLearnersTitle")}</p>
               </div>
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-primary mb-2">500+</h3>
-                <p className="text-muted-foreground">Expert Instructors</p>
+                <h3 className="text-3xl font-bold text-primary mb-2">{t("home.stats.expertInstructorsCount")}</h3>
+                <p className="text-muted-foreground">{t("home.stats.expertInstructorsTitle")}</p>
               </div>
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-primary mb-2">1.2k+</h3>
-                <p className="text-muted-foreground">Premium Courses</p>
+                <h3 className="text-3xl font-bold text-primary mb-2">{t("home.stats.premiumCoursesCount")}</h3>
+                <p className="text-muted-foreground">{t("home.stats.premiumCoursesTitle")}</p>
               </div>
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-primary mb-2">98%</h3>
-                <p className="text-muted-foreground">Satisfaction Rate</p>
+                <h3 className="text-3xl font-bold text-primary mb-2">{t("home.stats.satisfactionRateCount")}</h3>
+                <p className="text-muted-foreground">{t("home.stats.satisfactionRateTitle")}</p>
               </div>
             </div>
           </FadeIn>
@@ -195,10 +191,10 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-12">
-              <Badge variant="outline" className="mb-3">Featured Courses</Badge>
-              <h2 className="text-3xl font-bold mb-4">Learn from the Best Courses</h2>
+              <Badge variant="outline" className="mb-3">{t("home.featuredCourses.title")}</Badge>
+              <h2 className="text-3xl font-bold mb-4">{t("home.featuredCourses.title")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Explore our most popular courses handpicked by our team to help you achieve your learning goals.
+                {t("home.featuredCourses.subtitle")}
               </p>
             </div>
           </FadeIn>
@@ -212,7 +208,7 @@ const Index = () => {
             <div className="text-center mt-10">
               <Button asChild variant="outline" size="lg">
                 <Link to="/courses">
-                  View All Courses
+                  {t("home.featuredCourses.viewAll")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -226,10 +222,10 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <Badge className="mb-3">Why Choose Us</Badge>
-              <h2 className="text-3xl font-bold mb-4">A Learning Experience Like No Other</h2>
+              <Badge className="mb-3">{t("home.features.title")}</Badge>
+              <h2 className="text-3xl font-bold mb-4">{t("home.features.subtitle")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                We provide the tools and support to make your learning journey exceptional.
+                {t("home.features.description")}
               </p>
             </div>
           </FadeIn>
@@ -241,9 +237,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <GraduationCap className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Expert Instructors</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.expertInstructors.title")}</h3>
                   <p className="text-muted-foreground">
-                    Learn from industry professionals with years of experience in their fields.
+                    {t("home.features.expertInstructors.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -255,9 +251,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <Clock className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Flexible Learning</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.flexibleLearning.title")}</h3>
                   <p className="text-muted-foreground">
-                    Study at your own pace with lifetime access to all course materials.
+                    {t("home.features.flexibleLearning.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -269,9 +265,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <Shield className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Verified Certificates</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.verifiedCertificates.title")}</h3>
                   <p className="text-muted-foreground">
-                    Earn recognized certificates to showcase your skills to employers.
+                    {t("home.features.verifiedCertificates.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -283,9 +279,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <Users className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Community Support</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.communitySupport.title")}</h3>
                   <p className="text-muted-foreground">
-                    Join a vibrant community of learners to collaborate and grow together.
+                    {t("home.features.communitySupport.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -297,9 +293,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <BookOpen className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Quality Content</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.qualityContent.title")}</h3>
                   <p className="text-muted-foreground">
-                    Access high-quality, up-to-date learning materials curated by experts.
+                    {t("home.features.qualityContent.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -311,9 +307,9 @@ const Index = () => {
                   <div className="mb-4 rounded-full w-12 h-12 flex items-center justify-center bg-primary/10 text-primary">
                     <ArrowRight className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Career Advancement</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("home.features.careerAdvancement.title")}</h3>
                   <p className="text-muted-foreground">
-                    Gain skills that directly translate to career opportunities and growth.
+                    {t("home.features.careerAdvancement.description")}
                   </p>
                 </CardContent>
               </Card>
@@ -327,10 +323,10 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-12">
-              <Badge variant="outline" className="mb-3">Browse By Category</Badge>
-              <h2 className="text-3xl font-bold mb-4">Discover Your Perfect Course</h2>
+              <Badge variant="outline" className="mb-3">{t("courses.category")}</Badge>
+              <h2 className="text-3xl font-bold mb-4">{t("home.categories.title")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Explore our wide range of categories to find courses that match your interests and career goals.
+                {t("home.categories.subtitle")}
               </p>
             </div>
           </FadeIn>
@@ -345,7 +341,7 @@ const Index = () => {
                         {category.icon}
                       </div>
                       <h3 className="font-medium text-sm">{category.name}</h3>
-                      <p className="text-xs text-muted-foreground">{category.count} courses</p>
+                      <p className="text-xs text-muted-foreground">{category.count} {t("courses.lessons")}</p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -360,10 +356,10 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-12">
-              <Badge className="mb-3">Testimonials</Badge>
-              <h2 className="text-3xl font-bold mb-4">What Our Users Say</h2>
+              <Badge className="mb-3">{t("home.testimonials.title")}</Badge>
+              <h2 className="text-3xl font-bold mb-4">{t("home.testimonials.title")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Hear from students and teachers who have transformed their lives with LearnWave.
+                {t("home.testimonials.subtitle")}
               </p>
             </div>
           </FadeIn>
@@ -371,9 +367,9 @@ const Index = () => {
           <FadeIn delay={200}>
             <Tabs defaultValue="all" className="mx-auto max-w-4xl">
               <TabsList className="grid w-full grid-cols-3 mb-8">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="students">Students</TabsTrigger>
-                <TabsTrigger value="teachers">Teachers</TabsTrigger>
+                <TabsTrigger value="all">{t("home.testimonials.all")}</TabsTrigger>
+                <TabsTrigger value="students">{t("home.testimonials.students")}</TabsTrigger>
+                <TabsTrigger value="teachers">{t("home.testimonials.teachers")}</TabsTrigger>
               </TabsList>
               <TabsContent value="all" className="space-y-6">
                 {TESTIMONIALS.map((testimonial) => (
@@ -467,16 +463,16 @@ const Index = () => {
             <div className="bg-primary text-primary-foreground rounded-2xl p-8 md:p-12 lg:p-16 relative overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] mix-blend-overlay opacity-20"></div>
               <div className="relative z-10 text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("home.cta.title")}</h2>
                 <p className="text-primary-foreground/80 mb-8">
-                  Join thousands of students and transform your career with our expert-led courses.
+                  {t("home.cta.description")}
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Button size="lg" variant="secondary" asChild>
-                    <Link to="/sign-up">Get Started</Link>
+                    <Link to="/sign-up">{t("home.cta.getStarted")}</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" asChild>
-                    <Link to="/courses">Explore Courses</Link>
+                    <Link to="/courses">{t("home.cta.exploreCourses")}</Link>
                   </Button>
                 </div>
               </div>
