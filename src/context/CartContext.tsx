@@ -1,8 +1,9 @@
 
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
+import type { Course } from "@/types/course";
 
-// Course type definition
+// Cart course type definition
 export interface CartCourse {
   id: string;
   title: string;
@@ -15,7 +16,7 @@ export interface CartCourse {
 
 interface CartContextType {
   cartItems: CartCourse[];
-  addToCart: (course: CartCourse) => Promise<void>;
+  addToCart: (course: Course) => Promise<void>;  // Changed parameter type to Course
   removeFromCart: (courseId: string) => void;
   clearCart: () => void;
   isInCart: (courseId: string) => boolean;
@@ -56,8 +57,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Add a course to the cart
-  const addToCart = async (course: CartCourse): Promise<void> => {
+  // Add a course to the cart - modified to accept Course type and map to CartCourse
+  const addToCart = async (course: Course): Promise<void> => {
     // Check if the course is already in the cart
     if (cartItems.some(item => item.id === course.id)) {
       toast({
@@ -67,8 +68,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    // Convert Course to CartCourse format
+    const cartCourse: CartCourse = {
+      id: course.id,
+      title: course.title,
+      price: course.price,
+      instructor: course.instructor,
+      image: course.image_url || "", // Map image_url to image
+      category: course.category,
+      level: course.level
+    };
+
     // Add the course to the cart
-    setCartItems(prev => [...prev, course]);
+    setCartItems(prev => [...prev, cartCourse]);
   };
 
   // Remove a course from the cart

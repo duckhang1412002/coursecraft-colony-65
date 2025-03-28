@@ -50,6 +50,7 @@ const CourseCreation = () => {
     price: 0,
     duration: "",
     image_url: "",
+    thumbnail: "", // Initialize thumbnail field
   });
   
   // Course content state
@@ -62,6 +63,9 @@ const CourseCreation = () => {
       ] 
     }
   ]);
+  
+  // Add isSubmitting state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleCourseDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -178,6 +182,8 @@ const CourseCreation = () => {
         return;
       }
       
+      setIsSubmitting(true);
+      
       // Create course in Supabase
       createCourse({
         title: courseDetails.title || "",
@@ -203,7 +209,8 @@ const CourseCreation = () => {
                   title: `${section.title}: ${lesson.title}`,
                   content: lesson.content || "",
                   duration: lesson.duration,
-                  order_number: lessonOrder++
+                  order_number: lessonOrder++,
+                  type: lesson.type || "video"
                 });
               }
             }
@@ -220,6 +227,8 @@ const CourseCreation = () => {
         description: "Failed to create course. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   

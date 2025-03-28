@@ -17,6 +17,7 @@ import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
 import { useCart } from "@/hooks/useCart";
 import { useCourses } from "@/hooks/useCourses";
+import type { Course, Lesson } from "@/types/course";
 
 const CourseDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -52,7 +53,7 @@ const CourseDetails = () => {
         return null;
       }
       
-      return data;
+      return data as Course & { lessons: Lesson[] };
     },
     enabled: !!courseId,
   });
@@ -362,13 +363,13 @@ const CourseDetails = () => {
                     <div>
                       <h2 className="text-2xl font-bold">Course Content</h2>
                       <p className="text-muted-foreground">
-                        {course.lessons?.length} lessons • {formattedDuration} total
+                        {course?.lessons?.length} lessons • {course?.duration}
                       </p>
                     </div>
                   </div>
                   
                   <Accordion type="single" collapsible className="w-full">
-                    {course.lessons?.map((lesson, lessonIndex) => (
+                    {course?.lessons?.map((lesson, lessonIndex) => (
                       <AccordionItem key={lesson.id} value={lesson.id}>
                         <AccordionTrigger>
                           <div className="text-left">
@@ -384,7 +385,7 @@ const CourseDetails = () => {
                                 className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
                               >
                                 <div className="flex items-center">
-                                  {lesson.type === "video" ? (
+                                  {(lesson.type === "video" || !lesson.type) ? (
                                     <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
                                   ) : (
                                     <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
@@ -398,7 +399,7 @@ const CourseDetails = () => {
                                     </span>
                                   </div>
                                 </div>
-                                  <Lock className="h-4 w-4 text-muted-foreground" />
+                                <Lock className="h-4 w-4 text-muted-foreground" />
                               </div>
                           </div>
                         </AccordionContent>
