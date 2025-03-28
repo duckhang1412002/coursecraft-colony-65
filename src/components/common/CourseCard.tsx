@@ -165,7 +165,7 @@ const CourseCard = ({
           </div>
         </div>
         
-        <Link to={`/course/${id}`}>
+        <Link to={`/courses/${id}`}>
           <h3 className="text-lg font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
             {displayTitle}
           </h3>
@@ -193,7 +193,7 @@ const CourseCard = ({
       
       <CardFooter className="px-5 pb-5 pt-0">
         <Button className="w-full" asChild>
-          <Link to={`/course/${id}`}>{t("courses.viewCourse")}</Link>
+          <Link to={`/courses/${id}`}>{t("courses.viewCourse")}</Link>
         </Button>
       </CardFooter>
     </Card>

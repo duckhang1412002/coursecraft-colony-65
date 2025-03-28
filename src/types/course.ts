@@ -9,7 +9,7 @@ export interface Course {
   duration: string;
   price: number;
   image_url?: string;
-  thumbnail?: string; // Add thumbnail field
+  thumbnail?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -21,7 +21,7 @@ export interface Lesson {
   content: string;
   duration: string;
   order_number: number;
-  type?: string; // Add type field
+  type?: string;
   created_at?: string;
   updated_at?: string;
 }

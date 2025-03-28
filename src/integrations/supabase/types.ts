@@ -95,6 +95,7 @@ export type Database = {
           id: string
           order_number: number
           title: string
+          type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -105,6 +106,7 @@ export type Database = {
           id?: string
           order_number: number
           title: string
+          type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -115,6 +117,7 @@ export type Database = {
           id?: string
           order_number?: number
           title?: string
+          type?: string | null
           updated_at?: string | null
         }
         Relationships: [
