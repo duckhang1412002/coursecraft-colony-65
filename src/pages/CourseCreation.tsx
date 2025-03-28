@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useCourses } from "@/hooks/useCourses";
+import { useLessons } from "@/hooks/useLessons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +15,7 @@ import { ArrowLeft, Save, Plus, Trash2, FileText, Image, Upload } from "lucide-r
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
+import type { Course, Lesson } from "@/types/course";
 
 const COURSE_CATEGORIES = [
   "Web Development",
@@ -31,20 +34,22 @@ const COURSE_LEVELS = ["Beginner", "Intermediate", "Advanced"];
 
 const CourseCreation = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
+  const { createCourse, isLoading } = useCourses();
   const [activeTab, setActiveTab] = useState("details");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [courseId, setCourseId] = useState<string | null>(null);
+  const { createLesson } = useLessons(courseId || undefined);
   
   // Course details state
-  const [courseDetails, setCourseDetails] = useState({
+  const [courseDetails, setCourseDetails] = useState<Partial<Course>>({
     title: "",
     description: "",
     category: "",
     level: "",
-    price: "",
+    price: 0,
     duration: "",
-    thumbnail: "",
+    image_url: "",
   });
   
   // Course content state
@@ -53,7 +58,7 @@ const CourseCreation = () => {
       id: "section-1", 
       title: "Introduction", 
       lessons: [
-        { id: "lesson-1", title: "Welcome", type: "video", content: "", duration: "5:00" }
+        { id: "lesson-1", title: "Welcome", type: "video", content: "", duration: "5:00", order_number: 1 }
       ] 
     }
   ]);
@@ -91,7 +96,8 @@ const CourseCreation = () => {
                 title: `New Lesson`,
                 type: "video",
                 content: "",
-                duration: "0:00"
+                duration: "0:00",
+                order_number: section.lessons.length + 1
               }
             ]
           };
@@ -151,7 +157,15 @@ const CourseCreation = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    if (!isAuthenticated || !user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to create a course",
+        variant: "destructive",
+      });
+      return;
+    }
     
     try {
       // Validate form
@@ -161,20 +175,44 @@ const CourseCreation = () => {
           description: "Please fill in all required fields",
           variant: "destructive",
         });
-        setIsSubmitting(false);
         return;
       }
       
-      // Simulate API call to create course
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Course Created",
-        description: "Your course has been created successfully",
+      // Create course in Supabase
+      createCourse({
+        title: courseDetails.title || "",
+        description: courseDetails.description || "",
+        category: courseDetails.category || "",
+        level: courseDetails.level || "",
+        price: Number(courseDetails.price) || 0,
+        duration: courseDetails.duration || "",
+        image_url: courseDetails.image_url || "",
+        instructor: user.id
+      }, {
+        onSuccess: async (data) => {
+          // Set the course ID for creating lessons
+          if (data && data.id) {
+            setCourseId(data.id);
+            
+            // Create all lessons for the course
+            let lessonOrder = 1;
+            for (const section of sections) {
+              for (const lesson of section.lessons) {
+                await createLesson({
+                  course_id: data.id,
+                  title: `${section.title}: ${lesson.title}`,
+                  content: lesson.content || "",
+                  duration: lesson.duration,
+                  order_number: lessonOrder++
+                });
+              }
+            }
+            
+            // Navigate to dashboard after all lessons are created
+            navigate("/dashboard");
+          }
+        }
       });
-      
-      // Navigate to dashboard
-      navigate("/dashboard");
     } catch (error) {
       console.error("Error creating course:", error);
       toast({
@@ -182,8 +220,6 @@ const CourseCreation = () => {
         description: "Failed to create course. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
   
