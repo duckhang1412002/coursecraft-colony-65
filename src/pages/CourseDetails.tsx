@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,76 +15,97 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
 import { useCart } from "@/hooks/useCart";
-import { useCourses } from "@/hooks/useCourses";
-import type { Course, Lesson } from "@/types/course";
+
+// Mock course data
+const COURSE = {
+  id: "course1",
+  title: "Complete Web Development Bootcamp",
+  description: "Learn HTML, CSS, JavaScript, React, Node.js and more to become a full-stack web developer. This comprehensive course takes you from beginner to advanced with practical projects and real-world applications.",
+  instructor: "Dr. Sarah Johnson",
+  instructorTitle: "Web Development Instructor",
+  category: "Web Development",
+  level: "Beginner",
+  duration: "48 hours",
+  price: 49.99,
+  rating: 4.8,
+  totalStudents: 12840,
+  totalCourses: 8,
+  image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  updatedAt: "2023-05-15",
+  lessons: [
+    {
+      id: "lesson1",
+      title: "Introduction to HTML",
+      duration: "45:00",
+      type: "video"
+    },
+    {
+      id: "lesson2",
+      title: "CSS Fundamentals",
+      duration: "1:15:00",
+      type: "video"
+    },
+    {
+      id: "lesson3",
+      title: "JavaScript Basics",
+      duration: "1:30:00",
+      type: "video"
+    },
+    {
+      id: "lesson4",
+      title: "Building Your First Website",
+      duration: "2:00:00",
+      type: "document"
+    },
+    {
+      id: "lesson5",
+      title: "Introduction to React",
+      duration: "1:45:00",
+      type: "video"
+    },
+    {
+      id: "lesson6",
+      title: "Working with APIs",
+      duration: "1:20:00",
+      type: "video"
+    }
+  ]
+};
 
 const CourseDetails = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const { addToCart, isInCart } = useCart();
-  const { enrollCourse } = useCourses();
   const [activeTab, setActiveTab] = useState("overview");
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   
-  // Fetch course details
-  const { data: course, isLoading } = useQuery({
-    queryKey: ["course", courseId],
-    queryFn: async () => {
-      if (!courseId) return null;
-      
-      const { data, error } = await supabase
-        .from("courses")
-        .select(`
-          *,
-          lessons:lessons(*)
-        `)
-        .eq("id", courseId)
-        .single();
-      
-      if (error) {
-        toast({
-          title: "Error loading course",
-          description: error.message,
-          variant: "destructive",
-        });
-        return null;
-      }
-      
-      return data as Course & { lessons: Lesson[] };
-    },
-    enabled: !!courseId,
-  });
+  // For demo purposes, we're using the mock course data
+  const course = COURSE;
   
-  // Check if user is enrolled in this course
-  const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
-    queryKey: ["enrollment", courseId, user?.id],
-    queryFn: async () => {
-      if (!courseId || !user) return null;
-      
-      const { data, error } = await supabase
-        .from("user_courses")
-        .select("*")
-        .eq("course_id", courseId)
-        .eq("user_id", user.id)
-        .maybeSingle();
-      
-      if (error) {
-        console.error("Error checking enrollment:", error);
-        return null;
-      }
-      
-      return data;
-    },
-    enabled: !!courseId && !!user,
-  });
+  // Calculate total course content
+  const totalLessons = course.lessons.length;
   
-  const isEnrolled = !!enrollment;
+  // Calculate total duration from lessons
+  const totalDuration = course.lessons.reduce(
+    (total, lesson) => {
+      const [mins, secs] = lesson.duration.split(":");
+      return total + parseInt(mins) + (parseInt(secs || "0") / 60);
+    }, 0
+  );
   
+  // Format hours and minutes
+  const hours = Math.floor(totalDuration / 60);
+  const minutes = Math.floor(totalDuration % 60);
+  const formattedDuration = hours > 0 
+    ? `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} min` : ''}`
+    : `${minutes} minutes`;
+  
+  // Check if the course is already in the cart
+  const courseInCart = isInCart(course.id);
+
   const handleAddToCart = async () => {
-    if (!course) return;
-    
     if (!isAuthenticated) {
       toast({
         title: "Authentication Required",
@@ -117,8 +137,6 @@ const CourseDetails = () => {
   };
 
   const handleEnroll = async () => {
-    if (!courseId) return;
-    
     if (!isAuthenticated) {
       toast({
         title: "Authentication Required",
@@ -131,7 +149,13 @@ const CourseDetails = () => {
     setIsEnrolling(true);
     
     try {
-      enrollCourse(courseId);
+      // Simulate enrollment process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Enrollment Successful",
+        description: "You have been enrolled in this course",
+      });
     } catch (error) {
       console.error("Enrollment error:", error);
       toast({
@@ -143,60 +167,6 @@ const CourseDetails = () => {
       setIsEnrolling(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <>
-        <Navbar />
-        <main className="flex-1 container mx-auto px-6 py-12">
-          <div className="animate-pulse space-y-6">
-            <div className="h-10 bg-muted rounded-md w-1/3"></div>
-            <div className="h-6 bg-muted rounded-md w-2/3"></div>
-            <div className="h-64 bg-muted rounded-md w-full"></div>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-  
-  if (!course) {
-    return (
-      <>
-        <Navbar />
-        <main className="flex-1 container mx-auto px-6 py-12 text-center">
-          <h1 className="text-3xl font-bold mb-4">Course Not Found</h1>
-          <p className="mb-6">The course you're looking for doesn't exist or has been removed.</p>
-          <Button asChild>
-            <Link to="/courses">Browse Courses</Link>
-          </Button>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-  
-  // Total course content calculation
-  const totalLessons = course.lessons?.length || 0;
-  
-  // Calculate total duration from lessons
-  const totalDuration = course.lessons?.reduce(
-    (total, lesson) => {
-      const [mins] = lesson.duration.split(":");
-      return total + parseInt(mins || "0", 10);
-    }, 0
-  ) || 0;
-  
-  // Format hours and minutes
-  const hours = Math.floor(totalDuration / 60);
-  const minutes = totalDuration % 60;
-  const formattedDuration = hours > 0 
-    ? `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} min` : ''}`
-    : `${minutes} minutes`;
-  
-  // Check if the course is already in the cart
-  const courseInCart = isInCart(course.id);
-
   
   return (
     <>
@@ -227,7 +197,7 @@ const CourseDetails = () => {
                     </div>
                     <div className="flex items-center">
                       <BookOpen className="h-4 w-4 text-muted-foreground mr-1" />
-                      <span>Last updated: {new Date(course.updated_at || "").toLocaleDateString()}</span>
+                      <span>Last updated: {course.updatedAt}</span>
                     </div>
                   </div>
                   
@@ -243,7 +213,7 @@ const CourseDetails = () => {
                   <Card className="overflow-hidden shadow-lg">
                     <div className="aspect-video">
                       <img 
-                        src={course.image_url || "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
+                        src={course.image} 
                         alt={course.title} 
                         className="w-full h-full object-cover"
                       />
@@ -253,62 +223,54 @@ const CourseDetails = () => {
                         <h3 className="text-2xl font-bold">${course.price}</h3>
                       </div>
                       
-                      {isEnrolled ? (
-                        <Button className="w-full mb-4" asChild>
-                          <Link to={`/courses/${courseId}/learn`}>
-                            Continue Learning
-                          </Link>
+                      <div className="space-y-3 mb-4">
+                        <Button 
+                          className="w-full" 
+                          onClick={handleEnroll}
+                          disabled={isEnrolling}
+                        >
+                          {isEnrolling ? (
+                            <>
+                              <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
+                              Enrolling...
+                            </>
+                          ) : (
+                            "Enroll Now"
+                          )}
                         </Button>
-                      ) : (
-                        <div className="space-y-3 mb-4">
+                        
+                        {!courseInCart ? (
                           <Button 
-                            className="w-full" 
-                            onClick={handleEnroll}
-                            disabled={isEnrolling || isLoadingEnrollment}
+                            variant="outline" 
+                            className="w-full"
+                            onClick={handleAddToCart}
+                            disabled={isAddingToCart}
                           >
-                            {isEnrolling ? (
+                            {isAddingToCart ? (
                               <>
-                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
-                                Enrolling...
+                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-primary rounded-full"></div>
+                                Adding...
                               </>
                             ) : (
-                              "Enroll Now"
+                              <>
+                                <ShoppingCart className="mr-2 h-4 w-4" />
+                                Add to Cart
+                              </>
                             )}
                           </Button>
-                          
-                          {!courseInCart ? (
-                            <Button 
-                              variant="outline" 
-                              className="w-full"
-                              onClick={handleAddToCart}
-                              disabled={isAddingToCart}
-                            >
-                              {isAddingToCart ? (
-                                <>
-                                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-primary rounded-full"></div>
-                                  Adding...
-                                </>
-                              ) : (
-                                <>
-                                  <ShoppingCart className="mr-2 h-4 w-4" />
-                                  Add to Cart
-                                </>
-                              )}
-                            </Button>
-                          ) : (
-                            <Button 
-                              variant="secondary" 
-                              className="w-full"
-                              asChild
-                            >
-                              <Link to="/cart">
-                                <ShoppingCart className="mr-2 h-4 w-4" />
-                                View in Cart
-                              </Link>
-                            </Button>
-                          )}
-                        </div>
-                      )}
+                        ) : (
+                          <Button 
+                            variant="secondary" 
+                            className="w-full"
+                            asChild
+                          >
+                            <Link to="/cart">
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              View in Cart
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
                       
                       <div className="space-y-4">
                         <div className="flex items-center">
@@ -363,48 +325,87 @@ const CourseDetails = () => {
                     <div>
                       <h2 className="text-2xl font-bold">Course Content</h2>
                       <p className="text-muted-foreground">
-                        {course?.lessons?.length} lessons • {course?.duration}
+                        {totalLessons} lessons • {course.duration}
                       </p>
                     </div>
                   </div>
                   
                   <Accordion type="single" collapsible className="w-full">
-                    {course?.lessons?.map((lesson, lessonIndex) => (
-                      <AccordionItem key={lesson.id} value={lesson.id}>
-                        <AccordionTrigger>
-                          <div className="text-left">
-                            <div>{lesson.title}</div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              {lesson.duration}
-                            </div>
+                    <AccordionItem value="section-1">
+                      <AccordionTrigger>
+                        <div className="text-left">
+                          <div>Section 1: Getting Started</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            3 lessons • 3:30:00
                           </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-1 pt-1">
-                              <div 
-                                className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
-                              >
-                                <div className="flex items-center">
-                                  {(lesson.type === "video" || !lesson.type) ? (
-                                    <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
-                                  ) : (
-                                    <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
-                                  )}
-                                  <div>
-                                    <div className="flex items-center">
-                                      <span>{lesson.title}</span>
-                                    </div>
-                                    <span className="text-xs text-muted-foreground">
-                                      {lesson.duration}
-                                    </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 pt-1">
+                          {course.lessons.slice(0, 3).map((lesson) => (
+                            <div 
+                              key={lesson.id}
+                              className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
+                            >
+                              <div className="flex items-center">
+                                {lesson.type === "video" ? (
+                                  <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
+                                ) : (
+                                  <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
+                                )}
+                                <div>
+                                  <div className="flex items-center">
+                                    <span>{lesson.title}</span>
                                   </div>
+                                  <span className="text-xs text-muted-foreground">
+                                    {lesson.duration}
+                                  </span>
                                 </div>
-                                <Lock className="h-4 w-4 text-muted-foreground" />
                               </div>
+                              <Lock className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                    
+                    <AccordionItem value="section-2">
+                      <AccordionTrigger>
+                        <div className="text-left">
+                          <div>Section 2: Advanced Topics</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            3 lessons • 5:05:00
                           </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 pt-1">
+                          {course.lessons.slice(3).map((lesson) => (
+                            <div 
+                              key={lesson.id}
+                              className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
+                            >
+                              <div className="flex items-center">
+                                {lesson.type === "video" ? (
+                                  <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
+                                ) : (
+                                  <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
+                                )}
+                                <div>
+                                  <div className="flex items-center">
+                                    <span>{lesson.title}</span>
+                                  </div>
+                                  <span className="text-xs text-muted-foreground">
+                                    {lesson.duration}
+                                  </span>
+                                </div>
+                              </div>
+                              <Lock className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                   </Accordion>
                 </TabsContent>
                 
@@ -415,7 +416,7 @@ const CourseDetails = () => {
                       <div className="flex items-center">
                         <div>
                           <CardTitle>{course.instructor}</CardTitle>
-                          <CardDescription>Web Development Instructor</CardDescription>
+                          <CardDescription>{course.instructorTitle}</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
@@ -423,16 +424,16 @@ const CourseDetails = () => {
                       <div className="flex items-center gap-4 mb-4 text-sm">
                         <div className="flex items-center">
                           <Users className="h-4 w-4 text-muted-foreground mr-1" />
-                          <span> Students</span>
+                          <span>{course.totalStudents.toLocaleString()} Students</span>
                         </div>
                         <div className="flex items-center">
                           <BookOpen className="h-4 w-4 text-muted-foreground mr-1" />
-                          <span> Courses</span>
+                          <span>{course.totalCourses} Courses</span>
                         </div>
                       </div>
                       
                       <div className="prose prose-sm max-w-none">
-                        <p>Instructor Bio</p>
+                        <p>Dr. Sarah Johnson is an experienced web development instructor with over 10 years of industry experience. She specializes in modern JavaScript frameworks and has helped thousands of students launch their careers in web development.</p>
                       </div>
                     </CardContent>
                   </Card>

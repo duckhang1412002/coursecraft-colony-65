@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Filter, X } from "lucide-react";
@@ -11,7 +12,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
 import CourseCard from "@/components/common/CourseCard";
-import { useCourses } from "@/hooks/useCourses";
 
 // Mock courses data
 const COURSES = [
@@ -105,14 +105,13 @@ const CATEGORIES = [
 const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 
 const CoursesList = () => {
-  const { courses, isLoadingCourses } = useCourses();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
   // Filter functionality
-  const filteredCourses = courses.filter(course => {
+  const filteredCourses = COURSES.filter(course => {
     // Search query filter
     const matchesSearch = 
       searchQuery === "" || 
@@ -287,24 +286,11 @@ const CoursesList = () => {
               
               {/* Results count */}
               <p className="text-sm text-muted-foreground mb-6">
-                {isLoadingCourses ? "Loading courses..." : `Showing ${filteredCourses.length} courses`}
+                Showing {filteredCourses.length} courses
               </p>
               
               {/* Courses grid */}
-              {isLoadingCourses ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <Card key={i} className="h-96 animate-pulse">
-                      <div className="bg-muted h-48"></div>
-                      <CardContent className="p-5 space-y-3">
-                        <div className="h-5 bg-muted rounded-md w-3/4"></div>
-                        <div className="h-4 bg-muted rounded-md w-full"></div>
-                        <div className="h-4 bg-muted rounded-md w-2/3"></div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : filteredCourses.length > 0 ? (
+              {filteredCourses.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredCourses.map(course => (
                     <CourseCard 
@@ -314,11 +300,11 @@ const CoursesList = () => {
                       description={course.description}
                       instructor={course.instructor}
                       category={course.category}
-                      level={course.level as "Beginner" | "Intermediate" | "Advanced"}
+                      level={course.level}
                       duration={course.duration}
-                      students={0}
-                      rating={4.5}
-                      image={course.image_url || "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
+                      students={course.students}
+                      rating={course.rating}
+                      image={course.image}
                     />
                   ))}
                 </div>
