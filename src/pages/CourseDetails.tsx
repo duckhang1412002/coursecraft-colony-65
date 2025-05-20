@@ -17,59 +17,241 @@ import FadeIn from "@/components/animation/FadeIn";
 import { useCart } from "@/hooks/useCart";
 
 // Mock course data
-const COURSE = {
-  id: "course1",
-  title: "Complete Web Development Bootcamp",
-  description: "Learn HTML, CSS, JavaScript, React, Node.js and more to become a full-stack web developer. This comprehensive course takes you from beginner to advanced with practical projects and real-world applications.",
-  instructor: "Dr. Sarah Johnson",
-  instructorTitle: "Web Development Instructor",
-  category: "Web Development",
-  level: "Beginner",
-  duration: "48 hours",
-  price: 49.99,
-  rating: 4.8,
-  totalStudents: 12840,
-  totalCourses: 8,
-  image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-  updatedAt: "2023-05-15",
-  lessons: [
-    {
-      id: "lesson1",
-      title: "Introduction to HTML",
-      duration: "45:00",
-      type: "video"
-    },
-    {
-      id: "lesson2",
-      title: "CSS Fundamentals",
-      duration: "1:15:00",
-      type: "video"
-    },
-    {
-      id: "lesson3",
-      title: "JavaScript Basics",
-      duration: "1:30:00",
-      type: "video"
-    },
-    {
-      id: "lesson4",
-      title: "Building Your First Website",
-      duration: "2:00:00",
-      type: "document"
-    },
-    {
-      id: "lesson5",
-      title: "Introduction to React",
-      duration: "1:45:00",
-      type: "video"
-    },
-    {
-      id: "lesson6",
-      title: "Working with APIs",
-      duration: "1:20:00",
-      type: "video"
-    }
-  ]
+const COURSES = {
+  "course1": {
+    id: "course1",
+    title: "Complete Web Development Bootcamp",
+    description: "Learn HTML, CSS, JavaScript, React, Node.js and more to become a full-stack web developer. This comprehensive course takes you from beginner to advanced with practical projects and real-world applications.",
+    instructor: "Dr. Sarah Johnson",
+    instructorTitle: "Web Development Instructor",
+    category: "Web Development",
+    level: "Beginner",
+    duration: "48 hours",
+    price: 49.99,
+    rating: 4.8,
+    totalStudents: 12840,
+    totalCourses: 8,
+    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-05-15",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "Introduction to HTML",
+        duration: "45:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "CSS Fundamentals",
+        duration: "1:15:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "JavaScript Basics",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson4",
+        title: "Building Your First Website",
+        duration: "2:00:00",
+        type: "document"
+      },
+      {
+        id: "lesson5",
+        title: "Introduction to React",
+        duration: "1:45:00",
+        type: "video"
+      },
+      {
+        id: "lesson6",
+        title: "Working with APIs",
+        duration: "1:20:00",
+        type: "video"
+      }
+    ]
+  },
+  "course2": {
+    id: "course2",
+    title: "Advanced Data Science with Python",
+    description: "Master data analysis, visualization, machine learning and AI with Python. This course will take you from fundamental concepts to advanced techniques in data science.",
+    instructor: "Prof. Michael Chen",
+    instructorTitle: "Data Science Professor",
+    category: "Data Science",
+    level: "Advanced",
+    duration: "36 hours",
+    price: 59.99,
+    rating: 4.9,
+    totalStudents: 8754,
+    totalCourses: 5,
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-06-20",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "Python for Data Science",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "Data Visualization with Matplotlib",
+        duration: "1:45:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "Machine Learning Fundamentals",
+        duration: "2:00:00",
+        type: "video"
+      }
+    ]
+  },
+  "course3": {
+    id: "course3",
+    title: "UX/UI Design Fundamentals",
+    description: "Learn the principles of user experience and interface design to create beautiful products. This course covers design thinking, wireframing, prototyping, and user testing.",
+    instructor: "Emma Rodriguez",
+    instructorTitle: "UX Design Lead",
+    category: "Design",
+    level: "Intermediate",
+    duration: "24 hours",
+    price: 39.99,
+    rating: 4.7,
+    totalStudents: 6240,
+    totalCourses: 3,
+    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-04-10",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "Introduction to UX Design",
+        duration: "1:15:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "User Research Methods",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "Wireframing and Prototyping",
+        duration: "1:45:00",
+        type: "video"
+      }
+    ]
+  },
+  "course4": {
+    id: "course4",
+    title: "Modern JavaScript from Zero to Hero",
+    description: "Master JavaScript from the basics to advanced concepts like async/await, ES6+, and more. This course is designed for anyone who wants to learn modern JavaScript from scratch.",
+    instructor: "Alan Turing",
+    instructorTitle: "JavaScript Expert",
+    category: "Web Development",
+    level: "Beginner",
+    duration: "30 hours",
+    price: 45.99,
+    rating: 4.9,
+    totalStudents: 15320,
+    totalCourses: 6,
+    image: "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-07-05",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "JavaScript Basics",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "Working with Functions",
+        duration: "1:45:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "ES6+ Features",
+        duration: "2:00:00",
+        type: "video"
+      }
+    ]
+  },
+  "course5": {
+    id: "course5",
+    title: "React Native Mobile App Development",
+    description: "Build cross-platform mobile apps using React Native and JavaScript. Learn to create native mobile apps for iOS and Android using a single codebase.",
+    instructor: "Jessica Wang",
+    instructorTitle: "Mobile App Developer",
+    category: "Mobile Development",
+    level: "Intermediate",
+    duration: "28 hours",
+    price: 49.99,
+    rating: 4.6,
+    totalStudents: 5670,
+    totalCourses: 4,
+    image: "https://images.unsplash.com/photo-1542641371-f2a51b5a585a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-08-12",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "Getting Started with React Native",
+        duration: "1:15:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "Building UI Components",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "Navigation in React Native",
+        duration: "1:45:00",
+        type: "video"
+      }
+    ]
+  },
+  "course6": {
+    id: "course6",
+    title: "Digital Marketing Masterclass",
+    description: "Learn SEO, social media marketing, email campaigns, analytics and more. This comprehensive course covers all aspects of digital marketing for businesses of all sizes.",
+    instructor: "Robert Martinez",
+    instructorTitle: "Digital Marketing Strategist",
+    category: "Marketing",
+    level: "Beginner",
+    duration: "24 hours",
+    price: 39.99,
+    rating: 4.7,
+    totalStudents: 9350,
+    totalCourses: 5,
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    updatedAt: "2023-09-18",
+    lessons: [
+      {
+        id: "lesson1",
+        title: "Digital Marketing Fundamentals",
+        duration: "1:00:00",
+        type: "video"
+      },
+      {
+        id: "lesson2",
+        title: "Search Engine Optimization",
+        duration: "1:30:00",
+        type: "video"
+      },
+      {
+        id: "lesson3",
+        title: "Social Media Marketing",
+        duration: "1:45:00",
+        type: "video"
+      }
+    ]
+  }
 };
 
 const CourseDetails = () => {
@@ -81,8 +263,28 @@ const CourseDetails = () => {
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   
-  // For demo purposes, we're using the mock course data
-  const course = COURSE;
+  // Get course data based on courseId
+  const course = courseId ? COURSES[courseId as keyof typeof COURSES] || null : null;
+  
+  if (!course) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex-1 container mx-auto px-6 py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Course Not Found</h1>
+            <p className="text-muted-foreground mb-6">
+              The course you are looking for does not exist or has been removed.
+            </p>
+            <Button asChild>
+              <Link to="/courses">View All Courses</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
   
   // Calculate total course content
   const totalLessons = course.lessons.length;
@@ -336,7 +538,10 @@ const CourseDetails = () => {
                         <div className="text-left">
                           <div>Section 1: Getting Started</div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            3 lessons • 3:30:00
+                            {Math.min(3, course.lessons.length)} lessons • {course.lessons.slice(0, 3).reduce((total, lesson) => {
+                              const [mins] = lesson.duration.split(":");
+                              return total + parseInt(mins);
+                            }, 0)} minutes
                           </div>
                         </div>
                       </AccordionTrigger>
@@ -369,43 +574,48 @@ const CourseDetails = () => {
                       </AccordionContent>
                     </AccordionItem>
                     
-                    <AccordionItem value="section-2">
-                      <AccordionTrigger>
-                        <div className="text-left">
-                          <div>Section 2: Advanced Topics</div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            3 lessons • 5:05:00
-                          </div>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-1 pt-1">
-                          {course.lessons.slice(3).map((lesson) => (
-                            <div 
-                              key={lesson.id}
-                              className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
-                            >
-                              <div className="flex items-center">
-                                {lesson.type === "video" ? (
-                                  <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
-                                ) : (
-                                  <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
-                                )}
-                                <div>
-                                  <div className="flex items-center">
-                                    <span>{lesson.title}</span>
-                                  </div>
-                                  <span className="text-xs text-muted-foreground">
-                                    {lesson.duration}
-                                  </span>
-                                </div>
-                              </div>
-                              <Lock className="h-4 w-4 text-muted-foreground" />
+                    {course.lessons.length > 3 && (
+                      <AccordionItem value="section-2">
+                        <AccordionTrigger>
+                          <div className="text-left">
+                            <div>Section 2: Advanced Topics</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {course.lessons.length - 3} lessons • {course.lessons.slice(3).reduce((total, lesson) => {
+                                const [mins] = lesson.duration.split(":");
+                                return total + parseInt(mins);
+                              }, 0)} minutes
                             </div>
-                          ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-1 pt-1">
+                            {course.lessons.slice(3).map((lesson) => (
+                              <div 
+                                key={lesson.id}
+                                className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-md"
+                              >
+                                <div className="flex items-center">
+                                  {lesson.type === "video" ? (
+                                    <PlayCircle className="h-4 w-4 mr-3 text-muted-foreground" />
+                                  ) : (
+                                    <FileText className="h-4 w-4 mr-3 text-muted-foreground" />
+                                  )}
+                                  <div>
+                                    <div className="flex items-center">
+                                      <span>{lesson.title}</span>
+                                    </div>
+                                    <span className="text-xs text-muted-foreground">
+                                      {lesson.duration}
+                                    </span>
+                                  </div>
+                                </div>
+                                <Lock className="h-4 w-4 text-muted-foreground" />
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
                   </Accordion>
                 </TabsContent>
                 
@@ -433,7 +643,11 @@ const CourseDetails = () => {
                       </div>
                       
                       <div className="prose prose-sm max-w-none">
-                        <p>Dr. Sarah Johnson is an experienced web development instructor with over 10 years of industry experience. She specializes in modern JavaScript frameworks and has helped thousands of students launch their careers in web development.</p>
+                        <p>
+                          {course.instructor} is an experienced {course.category.toLowerCase()} instructor with over 10 years 
+                          of industry experience. They specialize in {course.category.toLowerCase()} and have 
+                          helped thousands of students achieve their learning goals.
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
