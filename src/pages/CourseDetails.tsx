@@ -262,6 +262,7 @@ const CourseDetails = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
   
   // Get course data based on courseId
   const course = courseId ? COURSES[courseId as keyof typeof COURSES] || null : null;
@@ -354,6 +355,8 @@ const CourseDetails = () => {
       // Simulate enrollment process
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      setIsEnrolled(true);
+      
       toast({
         title: "Enrollment Successful",
         description: "You have been enrolled in this course",
@@ -426,22 +429,33 @@ const CourseDetails = () => {
                       </div>
                       
                       <div className="space-y-3 mb-4">
-                        <Button 
-                          className="w-full" 
-                          onClick={handleEnroll}
-                          disabled={isEnrolling}
-                        >
-                          {isEnrolling ? (
-                            <>
-                              <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
-                              Enrolling...
-                            </>
-                          ) : (
-                            "Enroll Now"
-                          )}
-                        </Button>
+                        {isEnrolled ? (
+                          <Button 
+                            className="w-full" 
+                            asChild
+                          >
+                            <Link to={`/courses/${course.id}/learn`}>
+                              Go to Course
+                            </Link>
+                          </Button>
+                        ) : (
+                          <Button 
+                            className="w-full" 
+                            onClick={handleEnroll}
+                            disabled={isEnrolling}
+                          >
+                            {isEnrolling ? (
+                              <>
+                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-b-transparent border-white rounded-full"></div>
+                                Enrolling...
+                              </>
+                            ) : (
+                              "Enroll Now"
+                            )}
+                          </Button>
+                        )}
                         
-                        {!courseInCart ? (
+                        {!isEnrolled && !courseInCart ? (
                           <Button 
                             variant="outline" 
                             className="w-full"
@@ -460,7 +474,7 @@ const CourseDetails = () => {
                               </>
                             )}
                           </Button>
-                        ) : (
+                        ) : !isEnrolled && (
                           <Button 
                             variant="secondary" 
                             className="w-full"
