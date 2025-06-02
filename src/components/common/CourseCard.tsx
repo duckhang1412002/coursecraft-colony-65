@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Clock, Users, Star, RefreshCw } from "lucide-react";
@@ -8,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import VotingButtons from "./VotingButtons";
 
 interface CourseCardProps {
   id: string;
@@ -179,15 +179,24 @@ const CourseCard = ({
           {t("courses.instructor")}: {instructor}
         </p>
         
-        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <Clock className="h-4 w-4 mr-1" />
-            <span>{duration}</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-1" />
+              <span>{duration}</span>
+            </div>
+            <div className="flex items-center">
+              <Users className="h-4 w-4 mr-1" />
+              <span>{students.toLocaleString()}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Users className="h-4 w-4 mr-1" />
-            <span>{students.toLocaleString()}</span>
-          </div>
+          
+          <VotingButtons 
+            courseId={id} 
+            size="sm" 
+            showCounts={false}
+            className="ml-auto"
+          />
         </div>
       </CardContent>
       

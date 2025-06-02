@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +14,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FadeIn from "@/components/animation/FadeIn";
 import { useCart } from "@/hooks/useCart";
+import VotingButtons from "@/components/common/VotingButtons";
 
 // Mock course data
 const COURSES = {
@@ -406,11 +406,13 @@ const CourseDetails = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="font-medium">Created by</p>
                       <p className="text-primary">{course.instructor}</p>
                     </div>
+                    
+                    <VotingButtons courseId={course.id} />
                   </div>
                 </div>
                 
