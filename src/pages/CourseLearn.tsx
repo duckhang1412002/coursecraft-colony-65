@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,6 +37,7 @@ import Navbar from "@/components/layout/Navbar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FadeIn from "@/components/animation/FadeIn";
 import Quiz from "@/components/learning/Quiz";
+import VotingButtons from "@/components/common/VotingButtons";
 
 // Mock course data
 const COURSE = {
@@ -59,7 +59,7 @@ const COURSE = {
           content: `
             <div class="prose prose-sm max-w-none">
               <h2>Welcome to the Complete Web Development Bootcamp!</h2>
-              <p>In this course, you'll learn everything you need to know to become a full-stack web developer. We'll start with the basics of HTML, CSS, and JavaScript, and then move on to more advanced topics like React, Node.js, and MongoDB.</p>
+              <p>In this course, you'll learn everything you need to know to become a full-stack web developer. We'll start with the basics of HTML, CSS, and JavaScript, and then move on to more advanced topics like React, Node.js and MongoDB.</p>
               <p>By the end of this course, you'll be able to build complete, full-stack web applications from scratch.</p>
               <h3>What You'll Learn</h3>
               <ul>
