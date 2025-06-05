@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Users, Star, RefreshCw } from "lucide-react";
+import { Clock, Users, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -159,10 +160,6 @@ const CourseCard = ({
           <Badge variant="outline" className="bg-secondary/50">
             {category}
           </Badge>
-          <div className="flex items-center text-amber-500">
-            <Star className="h-4 w-4 fill-current mr-1" />
-            <span className="text-sm font-medium">{rating.toFixed(1)}</span>
-          </div>
         </div>
         
         <Link to={`/courses/${id}`}>
@@ -190,13 +187,13 @@ const CourseCard = ({
               <span>{students.toLocaleString()}</span>
             </div>
           </div>
-          
+        </div>
+        
+        <div className="mb-4">
           <VotingButtons 
             courseId={id} 
-            size="sm" 
-            showCounts={false}
-            showRating={true}
-            className="ml-auto"
+            size="sm"
+            variant="compact"
           />
         </div>
       </CardContent>

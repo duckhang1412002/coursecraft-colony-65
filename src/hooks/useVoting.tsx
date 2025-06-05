@@ -3,13 +3,10 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
-export type VoteType = "up" | "down" | null;
-
 interface VoteData {
   courseId: string;
   userId: string;
-  voteType: VoteType;
-  rating: number;
+  rating: number; // 1-5 stars
   comment: string;
   timestamp: string;
 }
@@ -30,19 +27,6 @@ export const useVoting = (courseId: string) => {
     return userVote || null;
   };
 
-  // Get vote counts for the course
-  const getVoteCounts = () => {
-    if (!MOCK_VOTES[courseId]) {
-      return { upvotes: 0, downvotes: 0 };
-    }
-
-    const votes = MOCK_VOTES[courseId];
-    const upvotes = votes.filter(vote => vote.voteType === "up").length;
-    const downvotes = votes.filter(vote => vote.voteType === "down").length;
-
-    return { upvotes, downvotes };
-  };
-
   // Get average rating for the course
   const getAverageRating = () => {
     if (!MOCK_VOTES[courseId] || MOCK_VOTES[courseId].length === 0) {
@@ -52,6 +36,28 @@ export const useVoting = (courseId: string) => {
     const votes = MOCK_VOTES[courseId];
     const totalRating = votes.reduce((sum, vote) => sum + vote.rating, 0);
     return totalRating / votes.length;
+  };
+
+  // Get total number of ratings
+  const getTotalRatings = () => {
+    if (!MOCK_VOTES[courseId]) return 0;
+    return MOCK_VOTES[courseId].length;
+  };
+
+  // Get rating distribution (how many 1-star, 2-star, etc.)
+  const getRatingDistribution = () => {
+    if (!MOCK_VOTES[courseId]) {
+      return { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    }
+
+    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    MOCK_VOTES[courseId].forEach(vote => {
+      if (vote.rating >= 1 && vote.rating <= 5) {
+        distribution[vote.rating as keyof typeof distribution]++;
+      }
+    });
+
+    return distribution;
   };
 
   // Get all comments for the course
@@ -64,17 +70,25 @@ export const useVoting = (courseId: string) => {
         userId: vote.userId,
         rating: vote.rating,
         comment: vote.comment,
-        timestamp: vote.timestamp,
-        voteType: vote.voteType
+        timestamp: vote.timestamp
       }));
   };
 
-  // Cast a vote with rating and comment
-  const vote = async (voteType: VoteType, rating: number = 0, comment: string = "") => {
+  // Submit a rating with optional comment
+  const vote = async (rating: number, comment: string = "") => {
     if (!user) {
       toast({
         title: "Authentication Required",
-        description: "Please sign in to vote",
+        description: "Please sign in to rate this course",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (rating < 1 || rating > 5) {
+      toast({
+        title: "Invalid Rating",
+        description: "Rating must be between 1 and 5 stars",
         variant: "destructive",
       });
       return;
@@ -96,30 +110,25 @@ export const useVoting = (courseId: string) => {
         vote => vote.userId !== user.id
       );
 
-      // Add new vote if it's not null (null means removing vote)
-      if (voteType) {
-        MOCK_VOTES[courseId].push({
-          courseId,
-          userId: user.id,
-          voteType,
-          rating,
-          comment,
-          timestamp: new Date().toISOString()
-        });
-      }
+      // Add new vote
+      MOCK_VOTES[courseId].push({
+        courseId,
+        userId: user.id,
+        rating,
+        comment,
+        timestamp: new Date().toISOString()
+      });
 
       toast({
-        title: "Vote Recorded",
-        description: voteType 
-          ? `You ${voteType === "up" ? "upvoted" : "downvoted"} this course`
-          : "Your vote has been removed",
+        title: "Rating Submitted",
+        description: `You rated this course ${rating} star${rating !== 1 ? 's' : ''}`,
       });
 
     } catch (error) {
-      console.error("Voting error:", error);
+      console.error("Rating error:", error);
       toast({
-        title: "Voting Failed",
-        description: "There was an error recording your vote",
+        title: "Rating Failed",
+        description: "There was an error submitting your rating",
         variant: "destructive",
       });
     } finally {
@@ -129,8 +138,9 @@ export const useVoting = (courseId: string) => {
 
   return {
     userVote: getUserVote(),
-    voteCounts: getVoteCounts(),
     averageRating: getAverageRating(),
+    totalRatings: getTotalRatings(),
+    ratingDistribution: getRatingDistribution(),
     comments: getComments(),
     vote,
     isVoting

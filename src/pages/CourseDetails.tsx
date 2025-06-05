@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -7,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
-  BookOpen, Clock, Users, BarChart, Award, Star, 
+  BookOpen, Clock, Users, BarChart, Award, 
   CheckCircle, PlayCircle, FileText, Lock, ShoppingCart
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -406,13 +407,16 @@ const CourseDetails = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div>
                       <p className="font-medium">Created by</p>
                       <p className="text-primary">{course.instructor}</p>
                     </div>
                     
-                    <VotingButtons courseId={course.id} />
+                    <VotingButtons 
+                      courseId={course.id} 
+                      showDetailed={true}
+                    />
                   </div>
                 </div>
                 
