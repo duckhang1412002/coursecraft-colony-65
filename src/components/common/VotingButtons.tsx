@@ -15,7 +15,8 @@ interface VotingButtonsProps {
   showCount?: boolean;
   showDetailed?: boolean;
   variant?: "horizontal" | "compact";
-  isCompleted?: boolean; // New prop to check if course is 100% completed
+  isCompleted?: boolean;
+  displayOnly?: boolean; // New prop for display-only mode
 }
 
 const VotingButtons = ({ 
@@ -25,7 +26,8 @@ const VotingButtons = ({
   showCount = true,
   showDetailed = false,
   variant = "horizontal",
-  isCompleted = false
+  isCompleted = false,
+  displayOnly = false // Default to false for backward compatibility
 }: VotingButtonsProps) => {
   const { userVote, averageRating, totalRatings, vote, isVoting } = useVoting(courseId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -34,12 +36,12 @@ const VotingButtons = ({
   const [hoverRating, setHoverRating] = useState(0);
 
   const handleQuickRating = (rating: number) => {
-    if (!isCompleted) return;
+    if (!isCompleted || displayOnly) return;
     vote(rating);
   };
 
   const submitDetailedRating = () => {
-    if (!isCompleted) return;
+    if (!isCompleted || displayOnly) return;
     vote(selectedRating, comment);
     setIsDialogOpen(false);
   };
@@ -55,15 +57,15 @@ const VotingButtons = ({
               size === "sm" && "h-4 w-4",
               size === "default" && "h-5 w-5", 
               size === "lg" && "h-6 w-6",
-              interactive && isCompleted && "cursor-pointer hover:scale-110 transition-transform",
-              !interactive || !isCompleted && "cursor-default",
+              interactive && isCompleted && !displayOnly && "cursor-pointer hover:scale-110 transition-transform",
+              (!interactive || !isCompleted || displayOnly) && "cursor-default",
               star <= rating
                 ? "text-yellow-400 fill-yellow-400"
                 : "text-gray-300"
             )}
-            onClick={() => interactive && isCompleted && onClick?.(star)}
-            onMouseEnter={() => interactive && isCompleted && setHoverRating(star)}
-            onMouseLeave={() => interactive && isCompleted && setHoverRating(0)}
+            onClick={() => interactive && isCompleted && !displayOnly && onClick?.(star)}
+            onMouseEnter={() => interactive && isCompleted && !displayOnly && setHoverRating(star)}
+            onMouseLeave={() => interactive && isCompleted && !displayOnly && setHoverRating(0)}
           />
         ))}
       </div>
@@ -73,17 +75,36 @@ const VotingButtons = ({
   if (variant === "compact") {
     return (
       <div className={cn("flex items-center gap-2", className)}>
-        {renderStars(userVote?.rating || (isCompleted ? hoverRating : 0), isCompleted, handleQuickRating)}
+        {renderStars(displayOnly ? averageRating : (userVote?.rating || (isCompleted ? hoverRating : 0)), !displayOnly, handleQuickRating)}
         {showCount && totalRatings > 0 && (
           <span className="text-sm text-muted-foreground">
             ({totalRatings})
           </span>
         )}
-        {!isCompleted && (
+        {!displayOnly && !isCompleted && (
           <span className="text-xs text-muted-foreground">
             Complete course to rate
           </span>
         )}
+      </div>
+    );
+  }
+
+  // Display-only mode: just show the rating without interactive elements
+  if (displayOnly) {
+    return (
+      <div className={cn("flex items-center gap-3", className)}>
+        <div className="flex items-center gap-2">
+          {renderStars(averageRating)}
+          {showCount && (
+            <div className="text-sm text-muted-foreground">
+              <span className="font-medium">{averageRating.toFixed(1)}</span>
+              {totalRatings > 0 && (
+                <span className="ml-1">({totalRatings} rating{totalRatings !== 1 ? 's' : ''})</span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
