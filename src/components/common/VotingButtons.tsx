@@ -15,6 +15,7 @@ interface VotingButtonsProps {
   showCount?: boolean;
   showDetailed?: boolean;
   variant?: "horizontal" | "compact";
+  isCompleted?: boolean; // New prop to check if course is 100% completed
 }
 
 const VotingButtons = ({ 
@@ -23,7 +24,8 @@ const VotingButtons = ({
   size = "default",
   showCount = true,
   showDetailed = false,
-  variant = "horizontal"
+  variant = "horizontal",
+  isCompleted = false
 }: VotingButtonsProps) => {
   const { userVote, averageRating, totalRatings, vote, isVoting } = useVoting(courseId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -32,10 +34,12 @@ const VotingButtons = ({
   const [hoverRating, setHoverRating] = useState(0);
 
   const handleQuickRating = (rating: number) => {
+    if (!isCompleted) return;
     vote(rating);
   };
 
   const submitDetailedRating = () => {
+    if (!isCompleted) return;
     vote(selectedRating, comment);
     setIsDialogOpen(false);
   };
@@ -51,14 +55,15 @@ const VotingButtons = ({
               size === "sm" && "h-4 w-4",
               size === "default" && "h-5 w-5", 
               size === "lg" && "h-6 w-6",
-              interactive && "cursor-pointer hover:scale-110 transition-transform",
+              interactive && isCompleted && "cursor-pointer hover:scale-110 transition-transform",
+              !interactive || !isCompleted && "cursor-default",
               star <= rating
                 ? "text-yellow-400 fill-yellow-400"
                 : "text-gray-300"
             )}
-            onClick={() => interactive && onClick?.(star)}
-            onMouseEnter={() => interactive && setHoverRating(star)}
-            onMouseLeave={() => interactive && setHoverRating(0)}
+            onClick={() => interactive && isCompleted && onClick?.(star)}
+            onMouseEnter={() => interactive && isCompleted && setHoverRating(star)}
+            onMouseLeave={() => interactive && isCompleted && setHoverRating(0)}
           />
         ))}
       </div>
@@ -68,10 +73,15 @@ const VotingButtons = ({
   if (variant === "compact") {
     return (
       <div className={cn("flex items-center gap-2", className)}>
-        {renderStars(userVote?.rating || hoverRating, true, handleQuickRating)}
+        {renderStars(userVote?.rating || (isCompleted ? hoverRating : 0), isCompleted, handleQuickRating)}
         {showCount && totalRatings > 0 && (
           <span className="text-sm text-muted-foreground">
             ({totalRatings})
+          </span>
+        )}
+        {!isCompleted && (
+          <span className="text-xs text-muted-foreground">
+            Complete course to rate
           </span>
         )}
       </div>
@@ -92,7 +102,11 @@ const VotingButtons = ({
         )}
       </div>
 
-      {userVote ? (
+      {!isCompleted ? (
+        <span className="text-sm text-muted-foreground">
+          Complete course to rate
+        </span>
+      ) : userVote ? (
         <Button variant="outline" size={size} disabled>
           You rated {userVote.rating} star{userVote.rating !== 1 ? 's' : ''}
         </Button>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -268,6 +267,9 @@ const CourseDetails = () => {
   // Get course data based on courseId
   const course = courseId ? COURSES[courseId as keyof typeof COURSES] || null : null;
   
+  // Check if course is completed (mock - in real app this would come from user progress)
+  const isCourseCompleted = false; // You would get this from user's progress data
+  
   if (!course) {
     return (
       <>
@@ -416,6 +418,7 @@ const CourseDetails = () => {
                     <VotingButtons 
                       courseId={course.id} 
                       showDetailed={true}
+                      isCompleted={isCourseCompleted}
                     />
                   </div>
                 </div>

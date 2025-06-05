@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
-import VotingButtons from "./VotingButtons";
 
 interface CourseCardProps {
   id: string;
@@ -187,14 +186,6 @@ const CourseCard = ({
               <span>{students.toLocaleString()}</span>
             </div>
           </div>
-        </div>
-        
-        <div className="mb-4">
-          <VotingButtons 
-            courseId={id} 
-            size="sm"
-            variant="compact"
-          />
         </div>
       </CardContent>
       

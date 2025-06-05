@@ -512,6 +512,7 @@ const CourseLearn = () => {
   const totalLessons = getAllLessons().length;
   const completedLessons = progress.length;
   const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
+  const isCourseCompleted = progressPercentage === 100;
 
   return (
     <ProtectedRoute>
@@ -551,6 +552,17 @@ const CourseLearn = () => {
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                   </div>
+                  {isCourseCompleted && (
+                    <div className="mt-4">
+                      <VotingButtons 
+                        courseId={courseId as string} 
+                        showDetailed={true}
+                        isCompleted={isCourseCompleted}
+                        variant="compact"
+                        size="sm"
+                      />
+                    </div>
+                  )}
                 </div>
                 <CourseSidebar 
                   course={COURSE} 
@@ -583,6 +595,15 @@ const CourseLearn = () => {
                     style={{ width: `${progressPercentage}%` }}
                   ></div>
                 </div>
+                {isCourseCompleted && (
+                  <div className="mt-4">
+                    <VotingButtons 
+                      courseId={courseId as string} 
+                      showDetailed={true}
+                      isCompleted={isCourseCompleted}
+                    />
+                  </div>
+                )}
               </div>
             </div>
             <CourseSidebar 
