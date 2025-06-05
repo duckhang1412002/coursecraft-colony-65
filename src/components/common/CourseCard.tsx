@@ -195,6 +195,7 @@ const CourseCard = ({
             courseId={id} 
             size="sm" 
             showCounts={false}
+            showRating={true}
             className="ml-auto"
           />
         </div>

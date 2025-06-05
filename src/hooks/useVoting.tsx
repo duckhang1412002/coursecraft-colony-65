@@ -9,6 +9,8 @@ interface VoteData {
   courseId: string;
   userId: string;
   voteType: VoteType;
+  rating: number;
+  comment: string;
   timestamp: string;
 }
 
@@ -21,11 +23,11 @@ export const useVoting = (courseId: string) => {
   const [isVoting, setIsVoting] = useState(false);
 
   // Get current user's vote for this course
-  const getUserVote = (): VoteType => {
+  const getUserVote = (): VoteData | null => {
     if (!user || !MOCK_VOTES[courseId]) return null;
     
     const userVote = MOCK_VOTES[courseId].find(vote => vote.userId === user.id);
-    return userVote?.voteType || null;
+    return userVote || null;
   };
 
   // Get vote counts for the course
@@ -41,8 +43,34 @@ export const useVoting = (courseId: string) => {
     return { upvotes, downvotes };
   };
 
-  // Cast a vote
-  const vote = async (voteType: VoteType) => {
+  // Get average rating for the course
+  const getAverageRating = () => {
+    if (!MOCK_VOTES[courseId] || MOCK_VOTES[courseId].length === 0) {
+      return 0;
+    }
+
+    const votes = MOCK_VOTES[courseId];
+    const totalRating = votes.reduce((sum, vote) => sum + vote.rating, 0);
+    return totalRating / votes.length;
+  };
+
+  // Get all comments for the course
+  const getComments = () => {
+    if (!MOCK_VOTES[courseId]) return [];
+    
+    return MOCK_VOTES[courseId]
+      .filter(vote => vote.comment.trim() !== "")
+      .map(vote => ({
+        userId: vote.userId,
+        rating: vote.rating,
+        comment: vote.comment,
+        timestamp: vote.timestamp,
+        voteType: vote.voteType
+      }));
+  };
+
+  // Cast a vote with rating and comment
+  const vote = async (voteType: VoteType, rating: number = 0, comment: string = "") => {
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -74,6 +102,8 @@ export const useVoting = (courseId: string) => {
           courseId,
           userId: user.id,
           voteType,
+          rating,
+          comment,
           timestamp: new Date().toISOString()
         });
       }
@@ -100,6 +130,8 @@ export const useVoting = (courseId: string) => {
   return {
     userVote: getUserVote(),
     voteCounts: getVoteCounts(),
+    averageRating: getAverageRating(),
+    comments: getComments(),
     vote,
     isVoting
   };
