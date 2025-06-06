@@ -45,7 +45,7 @@ const Navbar = () => {
           className="flex items-center space-x-2 text-xl font-semibold transition-opacity hover:opacity-80"
         >
           <BookOpen className="h-6 w-6 text-primary" />
-          <span>MECR DEMO</span>
+          <span>MECRLearn</span>
         </Link>
 
         {/* Desktop Navigation */}
