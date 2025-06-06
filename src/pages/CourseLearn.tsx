@@ -38,6 +38,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FadeIn from "@/components/animation/FadeIn";
 import Quiz from "@/components/learning/Quiz";
 import VotingButtons from "@/components/common/VotingButtons";
+import Certificate from "@/components/learning/Certificate";
 
 // Mock course data
 const COURSE = {
@@ -404,6 +405,7 @@ const CourseLearn = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showQuizResults, setShowQuizResults] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
   const [quizResults, setQuizResults] = useState<{
     score: number;
     totalQuestions: number;
@@ -514,6 +516,25 @@ const CourseLearn = () => {
   const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
   const isCourseCompleted = progressPercentage === 100;
 
+  // Generate certificate data
+  const getCertificateData = () => {
+    const completionDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    const certificateNumber = `CERT-${courseId?.toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    
+    return {
+      studentName: user?.email?.split('@')[0] || 'Student',
+      courseTitle: COURSE.title,
+      instructorName: COURSE.instructor,
+      completionDate,
+      certificateNumber
+    };
+  };
+
   return (
     <ProtectedRoute>
       <div className="flex flex-col min-h-screen">
@@ -553,7 +574,7 @@ const CourseLearn = () => {
                     ></div>
                   </div>
                   {isCourseCompleted && (
-                    <div className="mt-4">
+                    <div className="mt-4 space-y-2">
                       <VotingButtons 
                         courseId={courseId as string} 
                         showDetailed={true}
@@ -561,6 +582,15 @@ const CourseLearn = () => {
                         variant="compact"
                         size="sm"
                       />
+                      <Button 
+                        onClick={() => setShowCertificate(true)}
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full"
+                      >
+                        <Award className="mr-2 h-4 w-4" />
+                        View Certificate
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -596,12 +626,20 @@ const CourseLearn = () => {
                   ></div>
                 </div>
                 {isCourseCompleted && (
-                  <div className="mt-4">
+                  <div className="mt-4 space-y-2">
                     <VotingButtons 
                       courseId={courseId as string} 
                       showDetailed={true}
                       isCompleted={isCourseCompleted}
                     />
+                    <Button 
+                      onClick={() => setShowCertificate(true)}
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Award className="mr-2 h-4 w-4" />
+                      View Certificate
+                    </Button>
                   </div>
                 )}
               </div>
@@ -617,7 +655,24 @@ const CourseLearn = () => {
           
           {/* Lesson Content */}
           <div className="flex-1 overflow-y-auto h-[calc(100vh-64px)]">
-            {activeLesson ? (
+            {showCertificate ? (
+              <FadeIn>
+                <div className="p-6">
+                  <div className="flex items-center mb-6">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowCertificate(false)}
+                      className="mr-4"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      Back to Course
+                    </Button>
+                    <h1 className="text-2xl font-bold">Your Certificate</h1>
+                  </div>
+                  <Certificate {...getCertificateData()} />
+                </div>
+              </FadeIn>
+            ) : activeLesson ? (
               <FadeIn>
                 {showQuiz ? (
                   <div className="p-6 md:p-10">
