@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Clock, Users, BookOpen, CheckCircle, PlayCircle, FileText, ChevronLeft } from "lucide-react";
@@ -212,7 +213,7 @@ const CourseDetails = () => {
               {/* Right Column: Actions */}
               <div className="md:w-1/3">
                 <div className="sticky top-20 space-y-4">
-                  <Button variant="primary" size="lg" className="w-full" asChild>
+                  <Button variant="default" size="lg" className="w-full" asChild>
                     <Link to={`/courses/${courseId}/learn/lesson1`}>
                       <BookOpen className="h-4 w-4 mr-2" />
                       Start Learning
