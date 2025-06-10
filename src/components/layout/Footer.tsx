@@ -102,7 +102,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link to="/cookies" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {t("footer.privacy")}
+                    Cookie Policy
                   </Link>
                 </li>
               </ul>
