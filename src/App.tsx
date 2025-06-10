@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Cookies from "./pages/Cookies";
+import FAQ from "./pages/FAQ";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -43,6 +45,7 @@ const App = () => (
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/cookies" element={<Cookies />} />
+                <Route path="/faq" element={<FAQ />} />
                 <Route path="/courses/:courseId/learn" element={
                   <ProtectedRoute>
                     <CourseLearn />
