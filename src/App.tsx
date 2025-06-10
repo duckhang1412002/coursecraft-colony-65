@@ -18,6 +18,8 @@ import CoursesList from "./pages/CoursesList";
 import Cart from "./pages/Cart";
 import CourseLearn from "./pages/CourseLearn";
 import AdminDashboard from "./pages/AdminDashboard";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
                 <Route path="/courses" element={<CoursesList />} />
                 <Route path="/courses/:courseId" element={<CourseDetails />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/courses/:courseId/learn" element={
                   <ProtectedRoute>
                     <CourseLearn />
